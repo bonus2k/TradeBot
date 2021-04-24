@@ -3,19 +3,19 @@ package com.example.tradebot.domain;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.*;
 import java.util.Collection;
 import java.util.Set;
 
 @Entity
 @Table(name = "usr")
-@Getter @Setter @NoArgsConstructor
+@Getter @Setter @NoArgsConstructor @ToString
 public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -24,6 +24,8 @@ public class User implements UserDetails {
     @Length(min=5, max=24, message = "Имя должно содержать от 5 до 24 символов")
     private String username;
     @NotBlank (message = "Пароль не может быть пустым")
+    @Size (min=8, message = "Пароль должен быть больше 8 символов")
+    @NotNull(groups = ProfileInfo.class)
     private String password;
     private boolean active;
     @ElementCollection(targetClass = Role.class, fetch = FetchType.EAGER)
@@ -38,7 +40,7 @@ public class User implements UserDetails {
     @CollectionTable(name = "user_symbol", joinColumns = @JoinColumn(name = "user_id"))
     @Enumerated(EnumType.STRING)
     private Set<Symbol> symbol;
-    @Email (message = "Некорректный email")
+    @Email (message = "Некорректный email", groups = ProfileInfo.class)
     @NotBlank (message = "Email не может быть пустым")
     private String email;
     private String activationCode;

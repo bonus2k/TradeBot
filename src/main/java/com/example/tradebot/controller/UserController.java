@@ -1,22 +1,28 @@
 package com.example.tradebot.controller;
 
+import com.example.tradebot.domain.ProfileInfo;
 import com.example.tradebot.domain.Role;
 import com.example.tradebot.domain.Symbol;
 import com.example.tradebot.domain.User;
 import com.example.tradebot.service.OrderService;
 import com.example.tradebot.service.UserService;
+import com.example.tradebot.util.Util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.Map;
 
 @Controller
 @RequestMapping("/user")
 public class UserController {
+
     private final UserService userService;
     private final OrderService orderService;
 
@@ -72,7 +78,15 @@ public class UserController {
 
     @PostMapping("profile")
     public String editProfile(@AuthenticationPrincipal User user,
-                              @RequestParam Map<String, String> form) {
+                              @RequestParam Map<String, String> form,
+                              @Validated(ProfileInfo.class) User userForm,
+                              BindingResult bindingResult,
+                              Model model) {
+
+        if (bindingResult.hasErrors()){
+            Map<String, String> mapErrors = Util.getErrors(bindingResult);
+            mapErrors.entrySet().forEach(System.out::println);
+        }
 
         userService.updateProfile(user, form);
 

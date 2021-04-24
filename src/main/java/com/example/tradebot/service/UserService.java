@@ -133,7 +133,9 @@ public class UserService implements UserDetailsService {
 
         User userDB = getUserByUsername(user);
         Boolean editKey = false;
-        if (!form.get("password").isEmpty()) {
+
+
+        if (form.get("password")!=null && !form.get("password").isEmpty()) {
             userDB.setPassword(form.get("password"));
         }
 
@@ -147,7 +149,7 @@ public class UserService implements UserDetailsService {
             editKey = true;
         }
 
-        if (!form.get("email").isEmpty() && !form.get("email").equalsIgnoreCase(userDB.getEmail())) {
+        if (form.get("email") != null && !form.get("email").equalsIgnoreCase(userDB.getEmail())) {
             userDB.setEmail(form.get("email"));
             userDB.setActivationCode(UUID.randomUUID().toString());
             userDB.setActive(false);
@@ -174,17 +176,21 @@ public class UserService implements UserDetailsService {
         }
 
         if (editKey) {
-            BinanceApiClientFactory clientFactory = BinanceApiClientFactory.newInstance(userDB.getKey(), userDB.getSecret());
-            BinanceApiRestClient client = clientFactory.newRestClient();
-            try {
-                userDB.setCanTrade(client.getAccount(50000L, new Date().getTime()).isCanTrade());
-            } catch (BinanceApiException e) {
-                userDB.setCanTrade(false);
-            }
+            userDB.setCanTrade(isValidKey(userDB));
         }
 
         userRepo.save(userDB);
         orderService.addMapRemoteSymbol(oldSymbolSet, userDB);
+    }
+
+    private boolean isValidKey(User userDB) {
+        BinanceApiClientFactory clientFactory = BinanceApiClientFactory.newInstance(userDB.getKey(), userDB.getSecret());
+        BinanceApiRestClient client = clientFactory.newRestClient();
+        try {
+            return client.getAccount(50000L, new Date().getTime()).isCanTrade();
+        } catch (BinanceApiException e) {
+            return false;
+        }
     }
 
 

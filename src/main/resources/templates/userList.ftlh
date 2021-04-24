@@ -8,6 +8,7 @@
             <th scope="col">Логин</th>
             <th scope="col">Роль</th>
             <th scope="col">Торгует</th>
+            <th scope="col">Баланс</th>
             <th scope="col"></th>
         </tr>
         </thead>
@@ -17,6 +18,7 @@
             <th>${user.username}</th>
             <th><#list user.roles as role>${role}<#sep>, </#list></th>
             <th>${user.isRunString()}</th>
+            <th>${user.getBalance()?string["0.##"]}</th>
             <th><a href="/user/${user.id}">Edit</a></th>
         </tr>
     </#list>

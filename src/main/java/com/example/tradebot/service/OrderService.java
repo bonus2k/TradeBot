@@ -11,6 +11,7 @@ import com.example.tradebot.domain.*;
 import com.example.tradebot.repos.AlertsRepo;
 import com.example.tradebot.repos.OrderRepo;
 import com.example.tradebot.repos.UserRepo;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,6 +23,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
+@Log4j2
 public class OrderService {
 
     private Map<String, Boolean> symbolsTrade;
@@ -103,10 +105,9 @@ public class OrderService {
         try {
             newOrder.recvWindow(50000L);
             client.newOrder(newOrder);
+            log.info(user.getUsername() + ":" + newOrder.toString());
         } catch (BinanceApiException e) {
-            System.out.println(user.getUsername() + ":" + e.getMessage());
-            System.out.println(e.getError());
-            System.out.println("---------------------\n");
+            log.error(user.getUsername() + ":" + e.getMessage()+":"+e.getError());
         }
         save(newOrder, user);
     }
@@ -239,11 +240,11 @@ public class OrderService {
     public void saveAlert(String alert, String symbol, String name) {
         Alerts alerts = new Alerts(alert, symbol, Double.parseDouble(getPrice(symbol)), name, new Date());
         alertsRepo.save(alerts);
-
+        log.info("Symbol: " + symbol + "alert: "+ alert + isBuySymbol.get(symbol));
         if ("sell".equalsIgnoreCase(alert)) {
             isBuySymbol.put(symbol, true);
             sell(symbol);
-            System.out.println(symbol + ": " + isBuySymbol.get(symbol));
+
         }
         if ("buy".equalsIgnoreCase(alert) && isBuySymbol.get(symbol)) {
             isBuySymbol.put(symbol, false);

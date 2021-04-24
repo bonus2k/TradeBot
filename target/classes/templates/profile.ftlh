@@ -9,20 +9,60 @@
     </#if>
 
     <form method="post">
+<#--        <div class="form-group row">-->
+<#--            <label class="col-sm-2 col-form-label">Пароль:</label>-->
+<#--            <div class="col-sm-6">-->
+<#--                <input type="password" name="password" class="form-control" placeholder="Password"/>-->
+<#--            </div>-->
+<#--        </div>-->
+        <div class="form-group row">
+            <label class="col-sm-2 col-form-label">Пароль:</label>
+            <div class="col-sm-6">
+                <input type="password" name="password"
+                       class="form-control ${(passwordError??)?string('is-invalid', '')}" placeholder="Введите пароль"/>
+                <#if passwordError??>
+                    <div class="invalid-feedback">
+                        ${passwordError}
+                    </div>
+                </#if>
+            </div>
+        </div>
 
         <div class="form-group row">
             <label class="col-sm-2 col-form-label">Пароль:</label>
             <div class="col-sm-6">
-                <input type="password" name="password" class="form-control" placeholder="Password"/>
+                <input type="password" name="password2"
+                       class="form-control ${(password2Error??)?string('is-invalid', '')}"
+                       placeholder="Повторите пароль">
+                <#if password2Error??>
+                    <div class="invalid-feedback">
+                        ${password2Error}
+                    </div>
+                </#if>
             </div>
         </div>
+
         <div class="form-group row">
             <label class="col-sm-2 col-form-label">Email:</label>
             <div class="col-sm-6">
-                <input type="email" name="email" class="form-control" placeholder="example@email.com"
-                       value="${email!''}"/>
+                <input type="email" name="email" class="form-control ${(emailError??)?string('is-invalid', '')}"
+                       placeholder="example@email.com" value=${email!''}>
+                <#if emailError??>
+                    <div class="invalid-feedback">
+                        ${emailError}
+                    </div>
+                </#if>
             </div>
         </div>
+
+<#--        <div class="form-group row">-->
+<#--            <label class="col-sm-2 col-form-label">Email:</label>-->
+<#--            <div class="col-sm-6">-->
+<#--                <input type="email" name="email" class="form-control" placeholder="example@email.com"-->
+<#--                       value="${email!''}"/>-->
+<#--            </div>-->
+<#--        </div>-->
+
         <#if isUser>
         <div class="form-group row">
             <label class="col-sm-2 col-form-label">API Key:</label>

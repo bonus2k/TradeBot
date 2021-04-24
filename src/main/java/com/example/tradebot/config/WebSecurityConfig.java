@@ -29,7 +29,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.csrf().ignoringAntMatchers("/webhook/**").and()
+        http
+                .csrf().ignoringAntMatchers("/webhook/**").and()
                 .authorizeRequests()
                 .antMatchers("/", "/registration", "/activate/*").permitAll()
                 .anyRequest().authenticated()
@@ -42,7 +43,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                     .and()
                 .logout()
                 .permitAll();
-
+        http.requiresChannel()
+                .anyRequest().requiresInsecure();
     }
 
     @Override
