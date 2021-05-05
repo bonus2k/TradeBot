@@ -111,6 +111,7 @@ fabric.properties
 
 # Log file
 *.log
+*.log.gz
 
 # Properties file
 *.properties

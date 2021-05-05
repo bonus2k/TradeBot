@@ -1,7 +1,7 @@
 <#import "parts/common.ftlh" as c>
 <#include "parts/security.ftlh">
 <@c.page>
-    <h5>${username}</h5>
+    <h5>${userDB.username}</h5>
     <#if message??>
         <div class="alert alert-danger my-3" role="alert">
             ${message}
@@ -9,17 +9,12 @@
     </#if>
 
     <form method="post">
-<#--        <div class="form-group row">-->
-<#--            <label class="col-sm-2 col-form-label">Пароль:</label>-->
-<#--            <div class="col-sm-6">-->
-<#--                <input type="password" name="password" class="form-control" placeholder="Password"/>-->
-<#--            </div>-->
-<#--        </div>-->
+
         <div class="form-group row">
             <label class="col-sm-2 col-form-label">Пароль:</label>
             <div class="col-sm-6">
                 <input type="password" name="password"
-                       class="form-control ${(passwordError??)?string('is-invalid', '')}" placeholder="Введите пароль"/>
+                       class="form-control ${(passwordError??)?string('is-invalid', '')}" value="${userDB.password}">
                 <#if passwordError??>
                     <div class="invalid-feedback">
                         ${passwordError}
@@ -31,9 +26,9 @@
         <div class="form-group row">
             <label class="col-sm-2 col-form-label">Пароль:</label>
             <div class="col-sm-6">
-                <input type="password" name="password2"
+                <input type="password" name="confirmPassword"
                        class="form-control ${(password2Error??)?string('is-invalid', '')}"
-                       placeholder="Повторите пароль">
+                value="${userDB.password}">
                 <#if password2Error??>
                     <div class="invalid-feedback">
                         ${password2Error}
@@ -46,7 +41,7 @@
             <label class="col-sm-2 col-form-label">Email:</label>
             <div class="col-sm-6">
                 <input type="email" name="email" class="form-control ${(emailError??)?string('is-invalid', '')}"
-                       placeholder="example@email.com" value=${email!''}>
+                       placeholder="example@email.com" value=${userDB.email!''}>
                 <#if emailError??>
                     <div class="invalid-feedback">
                         ${emailError}
@@ -67,7 +62,7 @@
         <div class="form-group row">
             <label class="col-sm-2 col-form-label">API Key:</label>
             <div class="col-sm-6">
-                <input type="text" name="key" class="form-control" placeholder="API Key" value="${key!''}"/>
+                <input type="text" name="key" class="form-control" placeholder="API Key" value="${userDB.key!''}"/>
             </div>
         </div>
         <div class="form-group row">
@@ -79,7 +74,7 @@
             <div class="col-auto my-3">
                 <div class="form-check">
                     <input class="form-check-input" type="checkbox" id="autoSizingCheck2"
-                           name="isCanTrade" ${isCanTrade?string("checked", "")}/>
+                           name="isCanTrade" ${userDB.isCanTrade()?string("checked", "")}/>
                     <label class="form-check-label"
                            for="autoSizingCheck2">Ключи валидные</label>
                 </div>
@@ -96,7 +91,7 @@
             </div>
         </div>
                 </#if>
-        <#if isAdmin || isCanTrade>
+        <#if isAdmin || userDB.isCanTrade()>
         <div class="col-auto my-3">Отметьте пары, по которым будут проводиться торги</div>
 
         <div class="container">
@@ -106,9 +101,11 @@
                         <div class="p-3 border border-primary rounded my-3 .col-6 .col-md-4">
                             <div class="form-check">
                                 <input class="form-check-input" type="checkbox" id="autoSizingCheck2"
-                                       name=${symbol} ${userdb.getSymbol()?seq_contains(symbol)?string("checked", "")}>
+                                       name=${symbol} ${userDB.getSymbol()?seq_contains(symbol)?string("checked", "")}>
+
                                 <label class="form-check-label"
                                        for="autoSizingCheck2"> ${symbol}</label>
+                                <button class="btn btn-primary" value="http://localhost:8080/handler?sym=${symbol}">Sell</button>
                             </div>
                         </div>
                     </div>

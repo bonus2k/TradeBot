@@ -102,8 +102,10 @@
                             <div class="form-check">
                                 <input class="form-check-input" type="checkbox" id="autoSizingCheck2"
                                        name=${symbol} ${userDB.getSymbol()?seq_contains(symbol)?string("checked", "")}>
+
                                 <label class="form-check-label"
                                        for="autoSizingCheck2"> ${symbol}</label>
+                                <button class="btn btn-primary" value="http://localhost:8080/handler?sym=${symbol}">Sell</button>
                             </div>
                         </div>
                     </div>

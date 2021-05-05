@@ -1,4 +1,4 @@
-package com.example.tradebot.domain.validator;
+package com.example.tradebot.annotation;
 
 import javax.validation.Constraint;
 import javax.validation.Payload;

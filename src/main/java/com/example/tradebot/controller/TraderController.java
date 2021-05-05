@@ -4,7 +4,6 @@ import com.example.tradebot.domain.Alerts;
 import com.example.tradebot.domain.Order;
 import com.example.tradebot.domain.User;
 import com.example.tradebot.service.OrderService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -32,6 +31,12 @@ public class TraderController {
                                @RequestParam(name = "sym", required = false) String symbol) {
         orderService.saveAlert(alert, symbol, name);
         return new ResponseEntity(HttpStatus.OK);
+    }
+
+    @GetMapping("/handler")
+    public String hookHandler(@RequestParam(name = "sym", required = false) String symbol) {
+        orderService.saveAlert("sell", symbol, "handler");
+        return "redirect:/user/profile";
     }
 
     @GetMapping("/alert")

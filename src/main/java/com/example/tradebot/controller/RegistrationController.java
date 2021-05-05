@@ -4,7 +4,6 @@ import com.example.tradebot.domain.User;
 import com.example.tradebot.domain.dto.CaptchaResponseDto;
 import com.example.tradebot.service.UserService;
 import com.example.tradebot.util.Util;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -41,7 +40,6 @@ public class RegistrationController {
     @PostMapping("/registration")
     public String addUser(
             @RequestParam("g-recaptcha-response") String captchaResponse,
-            @RequestParam("password2") String passwordConfirm,
             @Valid User user,
             BindingResult bindingResult,
             Model model) {
@@ -50,9 +48,8 @@ public class RegistrationController {
         CaptchaResponseDto response = restTemplate.postForObject(url, Collections.emptyList(), CaptchaResponseDto.class);
 
 
-        if (userService.addUser(user, passwordConfirm, response, bindingResult).hasErrors()) {
+        if (userService.addUser(user, response, bindingResult).hasErrors()) {
             Map<String, String> mapErrors = Util.getErrors(bindingResult);
-            mapErrors.entrySet().forEach(System.out::println);
             model.addAllAttributes(mapErrors);
             model.addAttribute("username", user.getUsername());
             model.addAttribute("email", user.getEmail());

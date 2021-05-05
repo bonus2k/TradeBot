@@ -1,4 +1,4 @@
-package com.example.tradebot.domain.validator;
+package com.example.tradebot.annotation;
 
 import org.springframework.beans.BeanWrapperImpl;
 

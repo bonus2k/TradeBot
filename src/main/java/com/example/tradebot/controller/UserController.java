@@ -1,19 +1,16 @@
 package com.example.tradebot.controller;
 
-import com.example.tradebot.domain.ProfileInfo;
 import com.example.tradebot.domain.Role;
 import com.example.tradebot.domain.Symbol;
 import com.example.tradebot.domain.User;
 import com.example.tradebot.service.OrderService;
 import com.example.tradebot.service.UserService;
 import com.example.tradebot.util.Util;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -25,6 +22,7 @@ public class UserController {
 
     private final UserService userService;
     private final OrderService orderService;
+    private Map<String, String> mapProfile;
 
     public UserController(UserService userService, OrderService orderService) {
         this.userService = userService;
@@ -63,33 +61,40 @@ public class UserController {
     @GetMapping("profile")
     public String getProfile(@AuthenticationPrincipal User user,
                              Model model) {
-        User userDB = userService.getUserByUsername(user);
+        User userDB = userService.loadUserByUsername(user);
         orderService.setSymbolsTrade(userDB);
-        model.addAttribute("username", userDB.getUsername());
-        model.addAttribute("email", userDB.getEmail());
+        model.addAttribute("userDB", userDB);
         model.addAttribute("symbols", Symbol.values());
-        model.addAttribute("key", userDB.getKey());
-        model.addAttribute("userdb", userDB);
         model.addAttribute("tradeIsEnable", orderService.getTradeIsEnable());
-        model.addAttribute("isCanTrade", userDB.isCanTrade());
+        if (mapProfile!=null){
+            model.addAllAttributes(mapProfile);
+            mapProfile.clear();
+        }
 
         return "profile";
     }
 
     @PostMapping("profile")
     public String editProfile(@AuthenticationPrincipal User user,
-                              @RequestParam Map<String, String> form,
-                              @Validated(ProfileInfo.class) User userForm,
+                              @RequestParam Map<String, String> symbols,
+                              @Valid User userForm,
                               BindingResult bindingResult,
                               Model model) {
 
-        if (bindingResult.hasErrors()){
+
+        User userDB = userService.loadUserByUsername(user);
+        orderService.setSymbolsTrade(userDB);
+        model.addAttribute("userDB", userDB);
+        model.addAttribute("symbols", Symbol.values());
+        model.addAttribute("tradeIsEnable", orderService.getTradeIsEnable());
+
+        if (bindingResult.hasErrors()) {
             Map<String, String> mapErrors = Util.getErrors(bindingResult);
-            mapErrors.entrySet().forEach(System.out::println);
+            model.addAllAttributes(mapErrors);
+            return "profile";
         }
 
-        userService.updateProfile(user, form);
-
-        return "redirect:/user/profile";
+        mapProfile = userService.updateProfile(user, userForm, symbols);
+        return "redirect:profile";
     }
 }

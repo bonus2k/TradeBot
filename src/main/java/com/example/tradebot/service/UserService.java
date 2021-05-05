@@ -8,8 +8,7 @@ import com.example.tradebot.domain.Symbol;
 import com.example.tradebot.domain.User;
 import com.example.tradebot.domain.dto.CaptchaResponseDto;
 import com.example.tradebot.repos.UserRepo;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -19,9 +18,14 @@ import org.springframework.validation.FieldError;
 
 import java.util.*;
 import java.util.stream.Collectors;
-
+@Configurable
 @Service
 public class UserService implements UserDetailsService {
+
+//    @Autowired
+//    private ListableBeanFactory factory;
+//
+//    private static UserService instance;
 
     private final UserRepo userRepo;
     private final OrderService orderService;
@@ -33,53 +37,43 @@ public class UserService implements UserDetailsService {
         this.mailSender = mailSender;
     }
 
+//    @PostConstruct
+//    public void init()
+//    {
+//        instance = this;
+//    }
+//
+//    public static ListableBeanFactory getFactory()
+//    {
+//        return instance.factory;
+//    }
+
     @Override
     public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
-        return userRepo.findByUsername(s);
+        return userRepo.findByUsername(s).get();
     }
 
-    public boolean emailIsUsed(User user) {
-        User userDB = userRepo.findByEmail(user.getEmail());
-        if (userDB != null) return true;
-        return false;
+    public User loadUserByUsername(User user){
+        return userRepo.findByUsername(user.getUsername()).get();
     }
 
-    public boolean usernameIsUsed(User user) {
-        User userDB = userRepo.findByUsername(user.getUsername());
-        if (userDB != null) return true;
-        return false;
-    }
 
-    public BindingResult addUser(User user, String password2, CaptchaResponseDto response, BindingResult bindingResult) {
-
-        boolean usernameIsUsed = usernameIsUsed(user);
-        boolean emailIsUsed = emailIsUsed(user);
-        boolean password2IsCorrect = user.getPassword().equals(password2);
-        boolean captchaResponse = response.isSuccess();
-
-        if (usernameIsUsed || emailIsUsed || !password2IsCorrect || !captchaResponse) {
-            if (usernameIsUsed)
-                bindingResult.addError(new FieldError("usernameIsUsed", "username",
-                        "Логин уже занят"));
-            if (emailIsUsed)
-                bindingResult.addError(new FieldError("emailIsUsed", "email",
-                        "Email уже используется"));
-            if (!password2IsCorrect)
-                bindingResult.addError(new FieldError("password2IsCorrect", "password2",
-                        "Пароли не совподают"));
-            if (!captchaResponse)
-                bindingResult.addError(new FieldError("captchaResponse", "captcha",
-                        "Заполните капчу"));
-
-            return bindingResult;
-        }
-
+    public BindingResult addUser(User user, CaptchaResponseDto response, BindingResult bindingResult) {
+        bindingResult = validUserCaptcha(response, bindingResult);
         if (!bindingResult.hasErrors()) {
             user.setActive(false);
             user.setRoles(Collections.singleton(Role.USER));
             user.setActivationCode(UUID.randomUUID().toString());
             userRepo.save(user);
             sendActivationCode(user);
+        }
+        return bindingResult;
+    }
+
+    private BindingResult validUserCaptcha(CaptchaResponseDto response, BindingResult bindingResult) {
+        if (!response.isSuccess()){
+            bindingResult.addError(new FieldError("captchaResponse", "captcha",
+                    "Заполните капчу"));
         }
         return bindingResult;
     }
@@ -125,35 +119,43 @@ public class UserService implements UserDetailsService {
         }
 
         user.setComment(form.get("comment"));
-
         userRepo.save(user);
     }
 
-    public void updateProfile(User user, Map<String, String> form) {
+    public Map<String, String> updateProfile(User user, User userForm, Map<String, String> symbolsForm) {
 
-        User userDB = getUserByUsername(user);
+        Map<String, String> map = new HashMap<>();
+        User userDB = userRepo.findByUsername(user.getUsername()).get();
         Boolean editKey = false;
 
 
-        if (form.get("password")!=null && !form.get("password").isEmpty()) {
-            userDB.setPassword(form.get("password"));
+        if (!userDB.getPassword().equals(userForm.getPassword())) {
+            userDB.setPassword(userForm.getPassword());
+            userDB.setConfirmPassword(userForm.getConfirmPassword());
+            map.merge("message", "Пароль изменен", (a, b) -> a.join("; ", b));
         }
 
-        if (form.get("key") != null && !form.get("key").isEmpty()) {
-            userDB.setKey(form.get("key"));
+
+        if (userForm.getKey()!=null && !userForm.getKey().equals(userDB.getKey())) {
+            userDB.setKey(userForm.getKey());
+            map.merge("message", "Ключ изменен", (a, b) -> a.join("; ", b));
             editKey = true;
         }
 
-        if (form.get("secret") != null && !form.get("secret").isEmpty()) {
-            userDB.setSecret(form.get("secret"));
+        if (userForm.getSecret() != null && !userForm.getSecret().isEmpty()) {
+            userDB.setSecret(userForm.getSecret());
+            map.merge("message", "Секретный ключ изменен", (a, b) -> a.join("; ", b));
             editKey = true;
         }
 
-        if (form.get("email") != null && !form.get("email").equalsIgnoreCase(userDB.getEmail())) {
-            userDB.setEmail(form.get("email"));
+        if (!userDB.getEmail().equalsIgnoreCase(userForm.getEmail())) {
+            userDB.setEmail(userForm.getEmail());
             userDB.setActivationCode(UUID.randomUUID().toString());
             userDB.setActive(false);
             sendActivationCode(userDB);
+            map.merge("message",
+                    String.format("Email изменен. На email:%s выслано письмо с активацией", userForm.getEmail()),
+                    (a, b) -> a.join("; ", b));
         }
 
 
@@ -166,9 +168,10 @@ public class UserService implements UserDetailsService {
         userDB.getSymbol().clear();
 
         if (user.getRoles().contains(Role.ADMIN)) {
-            orderService.updateTradeRule(form, symbols);
-        } else {
-            for (String key : form.keySet()) {
+            orderService.updateTradeRule(symbolsForm, symbols);
+        }
+        else {
+            for (String key : symbolsForm.keySet()) {
                 if (symbols.contains(key)) {
                     userDB.getSymbol().add(Symbol.valueOf(key));
                 }
@@ -179,8 +182,9 @@ public class UserService implements UserDetailsService {
             userDB.setCanTrade(isValidKey(userDB));
         }
 
-        userRepo.save(userDB);
         orderService.addMapRemoteSymbol(oldSymbolSet, userDB);
+        userRepo.save(userDB);
+        return map;
     }
 
     private boolean isValidKey(User userDB) {
@@ -193,9 +197,8 @@ public class UserService implements UserDetailsService {
         }
     }
 
-
-    public User getUserByUsername(User user) {
-        return userRepo.findByUsername(user.getUsername());
+    public UserRepo getUserRepo(){
+        return userRepo;
     }
 
 }
