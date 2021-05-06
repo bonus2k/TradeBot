@@ -14,14 +14,12 @@ public class UniqueUsernameConstraintValidator implements ConstraintValidator<Un
 
     @Override
     public void initialize(UniqueUsername constraintAnnotation) {
-//        UserService userService = (UserService) UserService.getFactory().getBean("userService");
-//        userRepo = userService.getUserRepo();
     }
 
     @Override
     public boolean isValid(User user, ConstraintValidatorContext ctx) {
 
-        if (userService.getUserRepo().findByUsername(user.getUsername())
+        if (userService!=null && userService.getUserRepo().findByUsername(user.getUsername())
                 .map(u->u.getId())
                 .filter(id-> !id.equals(user.getId())).isPresent()){
             ctx.disableDefaultConstraintViolation();

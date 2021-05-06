@@ -36,7 +36,7 @@ public class TraderController {
     @GetMapping("/handler")
     public String hookHandler(@RequestParam(name = "sym", required = false) String symbol) {
         orderService.saveAlert("sell", symbol, "handler");
-        return "redirect:/user/profile";
+        return "redirect:/user/trade";
     }
 
     @GetMapping("/alert")

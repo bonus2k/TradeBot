@@ -18,7 +18,7 @@ import java.util.Set;
         @PasswordValueMatch(
                 field = "password",
                 fieldMatch = "confirmPassword",
-                message = "Пароли не совподают!!"
+                message = "Пароли не совподают"
         )
 })
 
@@ -43,12 +43,10 @@ public class User implements UserDetails {
     private String username;
 
     @ValidPassword
-    @NonNull
     @NotBlank
     private String password;
 
     @ValidPassword
-    @NonNull
     @NotBlank
     private String confirmPassword;
 

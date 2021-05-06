@@ -23,7 +23,7 @@
                     </li>
                 </#if>
                 <li class="nav-item">
-                    <a class="nav-link" href="/user/profile">Профиль</a>
+                    <a class="nav-link" href="/user/trade">Торги</a>
                 </li>
             </#if>
             <#if isAdmin>
@@ -33,7 +33,12 @@
             </#if>
         </ul>
 
-        <div class="navbar-text mr-3">${name}</div>
+        <div class="navbar-text mr-3">
+            <#if isUser || isAdmin><a class="nav-link" href="/user/setpassword">${name}</a>
+                <#else>
+                    ${name}
+            </#if>
+        </div>
         <#if name !="Гость"> <#if isUser>
             <div class="navbar-text mr-3">Ваш баланс: ${balance!?string["0.####"]}</div></#if>
             <@l.logout/>

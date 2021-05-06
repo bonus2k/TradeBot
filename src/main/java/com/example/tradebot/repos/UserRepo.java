@@ -16,6 +16,8 @@ public interface UserRepo extends JpaRepository<User, Long> {
 
     List<User> findBySymbolAndIsRunAndIsCanTrade(Symbol symbol, boolean isRun, boolean isCanTrade);
 
+    Optional<User> findById(Long id);
+
     Optional<User> findByEmail(String email);
 
     List<User> findBySymbolAndIsCanTrade(Symbol valueOf, boolean isCanTrade);

@@ -60,6 +60,7 @@ public class UserService implements UserDetailsService {
 
     public BindingResult addUser(User user, CaptchaResponseDto response, BindingResult bindingResult) {
         bindingResult = validUserCaptcha(response, bindingResult);
+
         if (!bindingResult.hasErrors()) {
             user.setActive(false);
             user.setRoles(Collections.singleton(Role.USER));
@@ -103,8 +104,8 @@ public class UserService implements UserDetailsService {
         return userRepo.findAll();
     }
 
-    public void userSave(String username, Map<String, String> form, User user, String isRun) {
-        user.setUsername(username);
+    public void userSave(Map<String, String> form, User user, String isRun) {
+
         user.setRun(isRun.equals("on"));
 
         Set<String> roles = Arrays.stream(Role.values())
@@ -122,18 +123,11 @@ public class UserService implements UserDetailsService {
         userRepo.save(user);
     }
 
-    public Map<String, String> updateProfile(User user, User userForm, Map<String, String> symbolsForm) {
+    public Map<String, String> updateTrade(User user, User userForm, Map<String, String> symbolsForm) {
 
         Map<String, String> map = new HashMap<>();
         User userDB = userRepo.findByUsername(user.getUsername()).get();
         Boolean editKey = false;
-
-
-        if (!userDB.getPassword().equals(userForm.getPassword())) {
-            userDB.setPassword(userForm.getPassword());
-            userDB.setConfirmPassword(userForm.getConfirmPassword());
-            map.merge("message", "Пароль изменен", (a, b) -> a.join("; ", b));
-        }
 
 
         if (userForm.getKey()!=null && !userForm.getKey().equals(userDB.getKey())) {
@@ -147,17 +141,6 @@ public class UserService implements UserDetailsService {
             map.merge("message", "Секретный ключ изменен", (a, b) -> a.join("; ", b));
             editKey = true;
         }
-
-        if (!userDB.getEmail().equalsIgnoreCase(userForm.getEmail())) {
-            userDB.setEmail(userForm.getEmail());
-            userDB.setActivationCode(UUID.randomUUID().toString());
-            userDB.setActive(false);
-            sendActivationCode(userDB);
-            map.merge("message",
-                    String.format("Email изменен. На email:%s выслано письмо с активацией", userForm.getEmail()),
-                    (a, b) -> a.join("; ", b));
-        }
-
 
         Set<String> symbols = Arrays.stream(Symbol.values())
                 .map(Symbol::name)
@@ -185,6 +168,21 @@ public class UserService implements UserDetailsService {
         orderService.addMapRemoteSymbol(oldSymbolSet, userDB);
         userRepo.save(userDB);
         return map;
+    }
+
+    public Map<String, String> setPassword(User user, User userForm) {
+        Map<String, String> map = new HashMap<>();
+        User userDB = userRepo.findByUsername(user.getUsername()).get();
+
+        if (!userDB.getPassword().equals(userForm.getPassword())) {
+            userDB.setPassword(userForm.getPassword());
+            userDB.setConfirmPassword(userForm.getConfirmPassword());
+            map.merge("message", "Пароль изменен", (a, b) -> a.join("; ", b));
+            userRepo.save(userDB);
+        }
+
+        return map;
+
     }
 
     private boolean isValidKey(User userDB) {

@@ -2,6 +2,7 @@ package com.example.tradebot.service;
 
 import com.binance.api.client.BinanceApiClientFactory;
 import com.binance.api.client.BinanceApiRestClient;
+import com.binance.api.client.domain.OrderSide;
 import com.binance.api.client.domain.account.Account;
 import com.binance.api.client.domain.account.AssetBalance;
 import com.binance.api.client.domain.account.NewOrder;
@@ -12,7 +13,6 @@ import com.example.tradebot.repos.AlertsRepo;
 import com.example.tradebot.repos.OrderRepo;
 import com.example.tradebot.repos.UserRepo;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -70,7 +70,7 @@ public class OrderService {
                 if (quantityBuy.compareTo(new BigDecimal(11)) > 0) {
                     int scale = Symbol.valueOf(symbol).getScale();
                     NewOrder buyOrder = NewOrder.marketBuy(symbol,
-                                    quantityBuy.divide(new BigDecimal(getPrice(symbol)),
+                            quantityBuy.divide(new BigDecimal(getPrice(symbol)),
                                     scale, RoundingMode.DOWN).toString());
                     sendOrder(user, client, buyOrder);
                 }
@@ -90,6 +90,7 @@ public class OrderService {
             BinanceApiRestClient client = clientFactory.newRestClient();
             Account account = client.getAccount(50000L, new Date().getTime());
             BigDecimal quantitySymbol = getQuantitySymbol(account, Symbol.valueOf(symbol));
+            getQuantityUsdtWithCommission(account, user);
 
             if (quantitySymbol.multiply(new BigDecimal(getPrice(symbol))).compareTo(new BigDecimal(11)) > 0) {
                 int scale = Symbol.valueOf(symbol).getScale();
@@ -107,7 +108,8 @@ public class OrderService {
             client.newOrder(newOrder);
             log.info(user.getUsername() + ":" + newOrder.toString());
         } catch (BinanceApiException e) {
-            log.error(user.getUsername() + ":" + e.getMessage()+":"+e.getError());
+            log.error(newOrder.toString());
+            log.error(user.getUsername() + ":" + e.getMessage() + ":" + e.getError());
         }
         save(newOrder, user);
     }
@@ -169,7 +171,24 @@ public class OrderService {
         order.setSum(new BigDecimal(newOrder.getQuantity())
                 .multiply(new BigDecimal(getPrice(newOrder.getSymbol())), mc).doubleValue());
         order.setUser(user);
+        order.setProfit(getProfit(newOrder, user));
         orderRepo.save(order);
+    }
+
+    private Double getProfit(NewOrder newOrder, User user) {
+        if (newOrder.getSide().equals(OrderSide.BUY)) {
+            return 0.0;
+        }
+
+        Order orderSell = orderRepo
+                .findTopByUserIdAndSymbolAndSideOrderByTimestampDesc
+                        (user.getId(), newOrder.getSymbol(), "BUY").get();
+
+        BigDecimal sumSell = new BigDecimal(orderSell.getSum());
+        BigDecimal sumBuy = new BigDecimal(newOrder.getQuantity())
+                .multiply(new BigDecimal(getPrice(newOrder.getSymbol())), mc);
+
+        return sumBuy.subtract(sumSell, mc).doubleValue();
     }
 
     private String getPrice(String symbol) {
@@ -240,7 +259,7 @@ public class OrderService {
     public void saveAlert(String alert, String symbol, String name) {
         Alerts alerts = new Alerts(alert, symbol, Double.parseDouble(getPrice(symbol)), name, new Date());
         alertsRepo.save(alerts);
-        log.info("Symbol: " + symbol + "alert: "+ alert + isBuySymbol.get(symbol));
+        log.info("Symbol: " + symbol + "alert: " + alert + isBuySymbol.get(symbol));
         if ("sell".equalsIgnoreCase(alert)) {
             isBuySymbol.put(symbol, true);
             sell(symbol);
