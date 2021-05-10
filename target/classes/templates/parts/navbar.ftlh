@@ -40,7 +40,10 @@
             </#if>
         </div>
         <#if name !="Гость"> <#if isUser>
-            <div class="navbar-text mr-3">Ваш баланс: ${balance!?string["0.####"]}</div></#if>
+            <a class="nav-link" href="/billing">
+                <div class="navbar-text mr-3">Ваш баланс: ${balance!?string["0.####"]}</div>
+            </a>
+                </#if>
             <@l.logout/>
         </#if>
 

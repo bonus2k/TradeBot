@@ -4,7 +4,9 @@ import com.example.tradebot.annotation.PasswordValueMatch;
 import com.example.tradebot.annotation.UniqueEmail;
 import com.example.tradebot.annotation.UniqueUsername;
 import com.example.tradebot.annotation.ValidPassword;
-import lombok.*;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -13,12 +15,13 @@ import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import java.util.Collection;
+import java.util.Date;
 import java.util.Set;
 @PasswordValueMatch.List({
         @PasswordValueMatch(
                 field = "password",
                 fieldMatch = "confirmPassword",
-                message = "Пароли не совподают"
+                message = "Пароли не совпадают"
         )
 })
 
@@ -29,7 +32,7 @@ import java.util.Set;
         @UniqueConstraint(columnNames = "email")
 })
 
-@Getter @Setter @NoArgsConstructor @ToString
+@Getter @Setter @ToString
 @UniqueEmail
 @UniqueUsername
 public class User implements UserDetails {
@@ -77,12 +80,17 @@ public class User implements UserDetails {
 
     @Column(length = 2048)
     private String comment;
-    private Double balance;
+    private Double amount;
+    @OneToOne(optional = false, cascade = CascadeType.ALL)
+    @JoinColumn(name = "bil_id")
+    private Billing billing;
 
+    public User() {
+        this.billing = new Billing(this, 5.0, new Date(), 20);
+    }
 
-
-    public Double getBalance() {
-        return (balance == null) ? 0.0 : balance;
+    public Double getAmount() {
+        return (amount == null) ? 0.0 : amount;
     }
     public String isRunString() {
         return (isRun) ? "Yes" : "No";

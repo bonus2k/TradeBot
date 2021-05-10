@@ -10,6 +10,7 @@
             <th scope="col">Торгует</th>
             <th scope="col">Баланс</th>
             <th scope="col">Ордера</th>
+            <th scope="col">Биллинг</th>
         </tr>
         </thead>
         <tbody>
@@ -18,8 +19,9 @@
             <th><a href="/user/${user.id}">${user.username}</a></th>
             <th><#list user.roles as role>${role}<#sep>, </#list></th>
             <th>${user.isRunString()}</th>
-            <th>${user.getBalance()?string["0.##"]}</th>
+            <th>${user.getAmount()?string["0.##"]}</th>
             <th><a href="/user/${user.id}/userOrder">Просмотр</a></th>
+            <th><a href="/${user.id}/billing">Просмотр</a></th>
         </tr>
     </#list>
         </tbody>

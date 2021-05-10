@@ -58,7 +58,7 @@
 
                                     <label class="form-check-label"
                                            for="autoSizingCheck2"> ${symbol}</label>
-                                   <#if isAdmin><a href="http://localhost:8080/handler?sym=${symbol}">SELL</a></#if>
+                                   <#if isAdmin><a href="/handler?sym=${symbol}">SELL</a></#if>
                                 </div>
                             </div>
                         </div>

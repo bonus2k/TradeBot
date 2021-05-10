@@ -128,7 +128,7 @@ public class OrderService {
 
     private BigDecimal getQuantityUsdtWithCommission(Account account, User user) {
         List<AssetBalance> balances = account.getBalances();
-        BigDecimal balTotal = new BigDecimal(0);
+        BigDecimal amountTotal = new BigDecimal(0);
         BigDecimal balUSDT = new BigDecimal(0);
 
         for (AssetBalance balance : balances
@@ -136,20 +136,20 @@ public class OrderService {
             if (!balance.getAsset().equals("USDT") && !balance.getFree().equals("0.00000000")) {
                 BigDecimal result = new BigDecimal(balance.getFree()).multiply(
                         new BigDecimal(getPrice(balance.getAsset() + "USDT")), mc);
-                balTotal = balTotal.add(result, mc);
+                amountTotal = amountTotal.add(result, mc);
             }
             if (balance.getAsset().equals("USDT")) {
                 balUSDT = new BigDecimal(balance.getFree(), mc);
-                balTotal = balTotal.add(balUSDT, mc);
+                amountTotal = amountTotal.add(balUSDT, mc);
             }
         }
 
-        user.setBalance(balTotal.doubleValue());
+        user.setAmount(amountTotal.doubleValue());
         userRepo.save(user);
 
-        BigDecimal userQuantityUSDT = (balTotal.divide(new BigDecimal(user.getSymbol().size()), mc).compareTo(balUSDT) > 0) ?
+        BigDecimal userQuantityUSDT = (amountTotal.divide(new BigDecimal(user.getSymbol().size()), mc).compareTo(balUSDT) > 0) ?
                 balUSDT :
-                balTotal.divide(new BigDecimal(user.getSymbol().size()), mc);
+                amountTotal.divide(new BigDecimal(user.getSymbol().size()), mc);
 
         BigDecimal usdtWithCommission = userQuantityUSDT.multiply(new BigDecimal("1.002"), mc);
 

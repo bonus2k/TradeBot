@@ -6,6 +6,7 @@ import com.example.tradebot.domain.User;
 import com.example.tradebot.service.OrderService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -32,7 +33,7 @@ public class TraderController {
         orderService.saveAlert(alert, symbol, name);
         return new ResponseEntity(HttpStatus.OK);
     }
-
+    @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping("/handler")
     public String hookHandler(@RequestParam(name = "sym", required = false) String symbol) {
         orderService.saveAlert("sell", symbol, "handler");

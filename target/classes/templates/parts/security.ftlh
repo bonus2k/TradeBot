@@ -6,7 +6,7 @@ know = Session.SPRING_SECURITY_CONTEXT??
     <#assign
     user = Session.SPRING_SECURITY_CONTEXT.authentication.principal
     name = user.getUsername()
-    balance = user.getBalance()
+    balance = user.getBilling().getBalance()
     isAdmin = user.getAuthorities()?seq_contains('ADMIN')
     isUser = user.getAuthorities()?seq_contains('USER')
     >
