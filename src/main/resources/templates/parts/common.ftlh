@@ -18,6 +18,7 @@
 
     </head>
     <body>
+    {padding-top: 140px;}
     <#include "navbar.ftlh">
     <div class="container mt-5">
         <#nested>

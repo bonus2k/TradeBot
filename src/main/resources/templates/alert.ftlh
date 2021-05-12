@@ -13,6 +13,7 @@
         <th scope="col">Действие</th>
         <th scope="col">Валюта</th>
         <th scope="col">Цена</th>
+        <th scope="col">Доходность</th>
         <th scope="col">Оповещение</th>
         <th scope="col">Время</th>
     </tr>
@@ -21,15 +22,14 @@
     <tbody>
     <#list alerts as alert>
 <tr>
-
         <td><b>${alert.id}</b></td>
         <td><span>${alert.alert}</span></td>
         <td><span>${alert.symbol}</span></td>
         <td><span>${alert.price}</span></td>
+        <td><span>${alert.rate}</span></td>
         <td><span>${alert.botName}</span></td>
         <td><b>${alert.date?string["MMM d, HH:mm"]}</b></td>
-
-        </tr>
+</tr>
     <#else>
         No alerts
     </#list>

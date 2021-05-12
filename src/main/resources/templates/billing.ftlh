@@ -7,20 +7,20 @@
 
     <div>
     <div class="form-group row">
-        <div class="col-sm-2 col-form-label"><h5><b>${user.username}</b></h5></div>
+        <div class="col-sm-2 col-form-label"><h5><b>${userDB.username}</b></h5></div>
         </div>
 
         <div class="form-group row">
             <label class="col-sm-2 col-form-label">Средства на бирже:</label>
             <div class="col-sm-6">
-                <label class="col-sm-2 col-form-label"><b> ${user.amount!?string(".##")} USDT</b></label>
+                <label class="col-sm-2 col-form-label"><b> ${userDB.amount!?string(".##")} USDT</b></label>
             </div>
         </div>
 
         <div class="form-group row">
             <label class="col-sm-2 col-form-label">Доход за неделю:</label>
             <div class="col-sm-6">
-                <label class="col-sm-2 col-form-label">${userBilling.profitOnWeek!} USDT</label>
+                <label class="col-sm-2 col-form-label">${userBilling.profitOnWeek!"0"} USDT</label>
             </div>
         </div>
     <#if isAdmin>
@@ -30,7 +30,7 @@
                 <label class="col-sm-2 col-form-label">Баланс:</label>
                 <div class="col-sm-6">
                     <input type="text" name="balance"
-                           class="form-control" value="${userBilling.balance} USDT">
+                           class="form-control" value="${userBilling.balance}">
                 </div>
             </div>
             <div class="form-group row">

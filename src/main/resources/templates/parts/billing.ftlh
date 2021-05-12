@@ -20,7 +20,7 @@
 
                     <td><b>${billing.id}</b></td>
                     <td><span>${billing.balance} USDT</span></td>
-                    <td><span>${billing.profitOnWeek!?string["0.####"]} USDT</span></td>
+                    <td><span>${billing.profitOnWeek!"0"} USDT</span></td>
                     <td><span>${billing.rate}%</span></td>
                     <td><b>${billing.date?string["MMM d, HH:mm"]}</b></td>
                     <td><span>${billing.comment!}</span></td>

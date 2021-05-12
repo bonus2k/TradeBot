@@ -257,17 +257,25 @@ public class OrderService {
     }
 
     public void saveAlert(String alert, String symbol, String name) {
-        Alerts alerts = new Alerts(alert, symbol, Double.parseDouble(getPrice(symbol)), name, new Date());
-        alertsRepo.save(alerts);
-        log.info("Symbol: " + symbol + "alert: " + alert + isBuySymbol.get(symbol));
+        Alerts alerts = new Alerts(alert, symbol, Double.parseDouble(getPrice(symbol)), 0.0, name, new Date());
+
         if ("sell".equalsIgnoreCase(alert)) {
             isBuySymbol.put(symbol, true);
             sell(symbol);
-
+            Alerts alertsBuy = alertsRepo.findTopBySymbolOrderByDateDesc(symbol).orElse(alerts);
+            if (alertsBuy.getAlert().equalsIgnoreCase("buy")) {
+                BigDecimal rate = (((new BigDecimal(alerts.getPrice()).subtract(new BigDecimal(alertsBuy.getPrice()), mc))
+                        .divide(new BigDecimal(alerts.getPrice()), mc))
+                        .multiply(new BigDecimal("100"), mc));
+                alerts.setRate(rate.doubleValue());
+            }
         }
         if ("buy".equalsIgnoreCase(alert) && isBuySymbol.get(symbol)) {
             isBuySymbol.put(symbol, false);
             buy(symbol);
         }
+
+        alertsRepo.save(alerts);
+        log.info("Symbol: " + symbol + "alert: " + alert + isBuySymbol.get(symbol));
     }
 }

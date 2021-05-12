@@ -19,15 +19,17 @@ public class Alerts {
     private String alert;
     private String symbol;
     private Double price;
+    private Double rate;
     private String botName;
     private Date date;
 
 
-    public Alerts(String alert, String symbol, Double price, String botName, Date date) {
+    public Alerts(String alert, String symbol, Double price, Double rate, String botName, Date date) {
         this.alert = alert;
         this.symbol = symbol;
         this.price = price;
         this.botName = botName;
+        this.rate = rate;
         this.date = date;
     }
 

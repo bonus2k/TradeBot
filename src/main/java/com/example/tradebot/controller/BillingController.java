@@ -22,12 +22,12 @@ public class BillingController {
         this.userService = userService;
     }
 
-    @GetMapping("/billing")
+    @GetMapping("billing")
     public String getBillingUser(
             @AuthenticationPrincipal User user,
             Model model) {
         model.addAttribute("userBilling", userService.loadUserByUsername(user).getBilling());
-        model.addAttribute("user", userService.loadUserByUsername(user));
+        model.addAttribute("userDB", userService.loadUserByUsername(user));
         model.addAttribute("billings", billingService.getBillingUser(user));
         return "billing";
     }
@@ -36,8 +36,9 @@ public class BillingController {
     public String getBilling(
             @PathVariable User user,
             Model model) {
+
         model.addAttribute("userBilling", userService.loadUserByUsername(user).getBilling());
-        model.addAttribute("user", userService.loadUserByUsername(user));
+        model.addAttribute("userDB", userService.loadUserByUsername(user));
         model.addAttribute("billings", billingService.getBillingUser(user));
         return "billing";
     }
@@ -45,8 +46,8 @@ public class BillingController {
     @PostMapping("{user}/billing")
     public String setBilling(
             @PathVariable User user,
-            Billing billing,
-            Model model) {
+            Billing billing)
+    {
         billingService.saveBilling(user, billing);
         return "redirect:billing";
     }
