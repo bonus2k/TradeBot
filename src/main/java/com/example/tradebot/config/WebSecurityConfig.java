@@ -1,7 +1,6 @@
 package com.example.tradebot.config;
 
 import com.example.tradebot.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -32,7 +31,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http
                 .csrf().ignoringAntMatchers("/webhook/**").and()
                 .authorizeRequests()
-                .antMatchers("/", "/registration", "/activate/*").permitAll()
+                .antMatchers("/", "/registration", "/activate/*", "/static/**").permitAll()
                 .anyRequest().authenticated()
                     .and()
                 .formLogin()
