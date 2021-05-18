@@ -41,6 +41,7 @@
 
 
         <div class="d-flex align-items-center">
+
             <button
                     class="navbar-toggler"
                     type="button"
@@ -52,6 +53,8 @@
                 <i class="fas fa-bars"></i>
             </button>
             <#if isUser || isAdmin>
+
+                    <a class="nav-link" href="/telegram/${user.id}" target="_blank"><i class="fab fa-telegram fa-2x" style="color: #0088cc"></i></a>
                 <div class="dropdown open right-container">
                     <a
                             class="btn btn-primary dropdown-toggle"

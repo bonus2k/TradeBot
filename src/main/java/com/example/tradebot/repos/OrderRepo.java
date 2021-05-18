@@ -10,13 +10,12 @@ import org.springframework.stereotype.Repository;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 
 @Repository
 public interface OrderRepo extends JpaRepository<Order, Long> {
     Iterable<Order> findByUserId(Long id);
 
-    Optional<Order> findTopByUserIdAndSymbolAndSideOrderByTimestampDesc(Long id, String symbol, String side);
+    List<Order> findByUserIdAndSymbolAndSideAndCounted(Long id, String symbol, String side, Boolean counted);
 
     @Query("SELECT o FROM Order o WHERE o.timestamp BETWEEN :from AND :to AND o.user = :user")
     List<Order> findOrderByDate(@Param("from") Date startDay,

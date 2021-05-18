@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -37,11 +38,13 @@ public class OrderService {
     private final OrderRepo orderRepo;
     private final AlertsRepo alertsRepo;
     private final UserRepo userRepo;
+    private final TelegramService telegramService;
 
-    public OrderService(OrderRepo orderRepo, AlertsRepo alertsRepo, UserRepo userRepo, MailSender mailSender) {
+    public OrderService(OrderRepo orderRepo, AlertsRepo alertsRepo, UserRepo userRepo, TelegramService telegramService) {
         this.orderRepo = orderRepo;
         this.alertsRepo = alertsRepo;
         this.userRepo = userRepo;
+        this.telegramService = telegramService;
 
         symbolsTrade = Arrays.stream(Symbol.values())
                 .map(Symbol::name)
@@ -60,7 +63,7 @@ public class OrderService {
 
     private void buy(String symbol) {
         if (tradeIsEnable && symbolsTrade.get(symbol)) {
-            List<User> users = userRepo.findBySymbolAndIsRunAndIsCanTrade(Symbol.valueOf(symbol), true, true);
+            Set<User> users = userRepo.findBySymbolAndIsRunAndIsCanTrade(Symbol.valueOf(symbol), true, true);
             for (User user : users) {
                 BinanceApiClientFactory clientFactory = BinanceApiClientFactory.newInstance(user.getKey(), user.getSecret());
                 BinanceApiRestClient client = clientFactory.newRestClient();
@@ -79,7 +82,7 @@ public class OrderService {
     }
 
     private void sell(String symbol) {
-        List<User> users = userRepo.findBySymbolAndIsCanTrade(Symbol.valueOf(symbol), true);
+        Set<User> users = userRepo.findBySymbolAndIsCanTrade(Symbol.valueOf(symbol), true);
         List<User> userDeletedSymbol = deletedSymbol.get(symbol);
         users.removeAll(userDeletedSymbol);
         users.addAll(userDeletedSymbol);
@@ -106,10 +109,10 @@ public class OrderService {
         try {
             newOrder.recvWindow(50000L);
             client.newOrder(newOrder);
-            log.info(user.getUsername() + ":" + newOrder.toString());
+            log.info(user.getUsername() + ": " + newOrder.toString());
         } catch (BinanceApiException e) {
             log.error(newOrder.toString());
-            log.error(user.getUsername() + ":" + e.getMessage() + ":" + e.getError());
+            log.error(user.getUsername() + ": " + e.getMessage() + ": " + e.getError());
         }
         save(newOrder, user);
     }
@@ -180,11 +183,20 @@ public class OrderService {
             return 0.0;
         }
 
-        Order orderSell = orderRepo
-                .findTopByUserIdAndSymbolAndSideOrderByTimestampDesc
-                        (user.getId(), newOrder.getSymbol(), "BUY").get();
+        List<Order> orderSell = orderRepo
+                .findByUserIdAndSymbolAndSideAndCounted
+                        (user.getId(), newOrder.getSymbol(), "BUY", false);
 
-        BigDecimal sumSell = new BigDecimal(orderSell.getSum());
+        if (orderSell.size() < 1) {
+            return 0.0;
+        }
+
+        BigDecimal sumSell = orderSell.stream()
+                .peek(o -> o.setCounted(true))
+                .peek(orderRepo::save)
+                .map(Order::getSum)
+                .map(BigDecimal::valueOf)
+                .reduce((o1, o2) -> o1.add(o2)).get();
         BigDecimal sumBuy = new BigDecimal(newOrder.getQuantity())
                 .multiply(new BigDecimal(getPrice(newOrder.getSymbol())), mc);
 
@@ -257,6 +269,7 @@ public class OrderService {
     }
 
     public void saveAlert(String alert, String symbol, String name) {
+        SimpleDateFormat formater = new SimpleDateFormat("dd MMMM в HH:mm:ss");
         Alerts alerts = new Alerts(alert, symbol, Double.parseDouble(getPrice(symbol)), 0.0, name, new Date());
 
         if ("sell".equalsIgnoreCase(alert)) {
@@ -268,13 +281,16 @@ public class OrderService {
                         .divide(new BigDecimal(alerts.getPrice()), mc))
                         .multiply(new BigDecimal("100"), mc));
                 alerts.setRate(rate.doubleValue());
+                telegramService.sendAll(String.format("\uD83D\uDD14Продажа %s, пара: %s, цена: %s, доход: %s, сигнал от: %s",
+                        formater.format(alerts.getDate()), alerts.getSymbol(), alerts.getPrice(), alerts.getRate(), alerts.getBotName()));
             }
         }
         if ("buy".equalsIgnoreCase(alert) && isBuySymbol.get(symbol)) {
             isBuySymbol.put(symbol, false);
             buy(symbol);
+            telegramService.sendAll(String.format("\uD83D\uDD14Покупка %s, пара: %s, цена: %s, сигнал от: %s",
+                    formater.format(alerts.getDate()), alerts.getSymbol(), alerts.getPrice(), alerts.getBotName()));
         }
-
         alertsRepo.save(alerts);
         log.info("Symbol: " + symbol + "alert: " + alert + isBuySymbol.get(symbol));
     }

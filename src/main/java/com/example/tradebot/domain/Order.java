@@ -26,5 +26,6 @@ public class Order {
     private Double sum;
     private Double profit;
     private Date timestamp;
+    private boolean counted;
 
 }

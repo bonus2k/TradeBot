@@ -4,8 +4,8 @@ import com.example.tradebot.annotation.PasswordValueMatch;
 import com.example.tradebot.annotation.UniqueEmail;
 import com.example.tradebot.annotation.UniqueUsername;
 import com.example.tradebot.annotation.ValidPassword;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.security.core.GrantedAuthority;
@@ -16,7 +16,9 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Set;
+
 @PasswordValueMatch.List({
         @PasswordValueMatch(
                 field = "password",
@@ -32,16 +34,16 @@ import java.util.Set;
         @UniqueConstraint(columnNames = "email")
 })
 
-@Getter @Setter @ToString
 @UniqueEmail
 @UniqueUsername
+@Data
 public class User implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @Length(min=5, max=24, message = "Имя должно содержать от 5 до 24 символов")
+    @Length(min = 5, max = 24, message = "Имя должно содержать от 5 до 24 символов")
     @Column(name = "username", unique = true)
     private String username;
 
@@ -71,8 +73,8 @@ public class User implements UserDetails {
     @Enumerated(EnumType.STRING)
     private Set<Symbol> symbol;
 
-    @Email (message = "Некорректный email")
-    @NotBlank (message = "Email не может быть пустым")
+    @Email(message = "Некорректный email")
+    @NotBlank(message = "Email не может быть пустым")
     @Column(name = "email", unique = true)
     private String email;
     private String activationCode;
@@ -81,20 +83,25 @@ public class User implements UserDetails {
     @Column(length = 2048)
     private String comment;
     private Double amount;
-    @OneToOne(optional = false, cascade = CascadeType.ALL)
+    @OneToMany()
     @JoinColumn(name = "bil_id")
-    private Billing billing;
+    @EqualsAndHashCode.Exclude @ToString.Exclude
+    private Set<Billing> billing;
+    private Long telegram_chat_id;
 
     public User() {
-        this.billing = new Billing(this, 5.0, new Date(), 20);
+        this.billing = new HashSet<>();
+        billing.add(new Billing(this, 5.0, new Date(), 20));
     }
 
     public Double getAmount() {
         return (amount == null) ? 0.0 : amount;
     }
+
     public String isRunString() {
         return (isRun) ? "Yes" : "No";
     }
+
     public boolean isAdmin() {
         return roles.contains(Role.ADMIN);
     }

@@ -10,4 +10,5 @@ import java.util.List;
 public interface BillingRepo extends JpaRepository<Billing, Long> {
 
         List<Billing> findByUser(User user);
+        Billing findTopByUserOrderByDateDesc(User user);
 }

@@ -1,14 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Configuration>
     <Properties>
-        <Property name="skipJansi">false</Property>
-        <Property name="log4j2.skipJansi" value="false"/>
+<!--        <Property name="skipJansi">false</Property>-->
+<!--        <Property name="log4j2.skipJansi" value="false"/>-->
     </Properties>
     <Appenders>
         <Console name="Console" target="SYSTEM_OUT">
-<!--            <PatternLayout-->
-<!--                    pattern="%style{%d{ISO8601}}{black} %highlight{%-5level }[%style{%t}{bright,blue}] %style{%C{1.}}{bright,yellow}: %msg%n%throwable"/>-->
-            <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t]
+            <PatternLayout pattern="%d{dd-MM-yy HH:mm:ss.SSS} [%t]
       %highlight{%level}{FATAL=red, ERROR=red, WARN=yellow, INFO=green, DEBUG=blue} - %msg%n" disableAnsi="false"/>
         </Console>
 
@@ -19,8 +17,6 @@
                 <pattern>%d %p %C{1.} [%t] %m%n</pattern>
             </PatternLayout>
             <Policies>
-                <!-- rollover on startup, daily and when the file reaches
-                    10 MegaBytes -->
                 <OnStartupTriggeringPolicy/>
                 <SizeBasedTriggeringPolicy
                         size="10 MB"/>

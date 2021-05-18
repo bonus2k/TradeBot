@@ -23,13 +23,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     public void configure(WebSecurity web) throws Exception {
-        web.ignoring().antMatchers("/webhook/**");
+        web.ignoring().antMatchers("/webhook/**", "/telegram/callback/**");
     }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
-                .csrf().ignoringAntMatchers("/webhook/**").and()
+                .csrf().ignoringAntMatchers("/webhook/**", "/telegram/callback/**").and()
                 .authorizeRequests()
                 .antMatchers("/", "/registration", "/activate/*", "/static/**").permitAll()
                 .anyRequest().authenticated()

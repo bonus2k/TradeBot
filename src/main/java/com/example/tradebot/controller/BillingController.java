@@ -26,7 +26,7 @@ public class BillingController {
     public String getBillingUser(
             @AuthenticationPrincipal User user,
             Model model) {
-        model.addAttribute("userBilling", userService.loadUserByUsername(user).getBilling());
+        model.addAttribute("userBilling", billingService.findTopByUserOrderByDateDesc(user));
         model.addAttribute("userDB", userService.loadUserByUsername(user));
         model.addAttribute("billings", billingService.getBillingUser(user));
         return "billing";
@@ -37,7 +37,7 @@ public class BillingController {
             @PathVariable User user,
             Model model) {
 
-        model.addAttribute("userBilling", userService.loadUserByUsername(user).getBilling());
+        model.addAttribute("userBilling", billingService.findTopByUserOrderByDateDesc(user));
         model.addAttribute("userDB", userService.loadUserByUsername(user));
         model.addAttribute("billings", billingService.getBillingUser(user));
         return "billing";
