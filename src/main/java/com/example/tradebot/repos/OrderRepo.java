@@ -13,7 +13,7 @@ import java.util.List;
 
 @Repository
 public interface OrderRepo extends JpaRepository<Order, Long> {
-    Iterable<Order> findByUserId(Long id);
+    Iterable<Order> findByUserIdOrderByTimestamp(Long id);
 
     List<Order> findByUserIdAndSymbolAndSideAndCounted(Long id, String symbol, String side, Boolean counted);
 

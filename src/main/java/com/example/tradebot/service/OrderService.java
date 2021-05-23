@@ -256,7 +256,7 @@ public class OrderService {
     }
 
     public Iterable<Order> findByUser(User user) {
-        return orderRepo.findByUserId(user.getId());
+        return orderRepo.findByUserIdOrderByTimestamp(user.getId());
     }
 
     public Iterable<Alerts> findAllAlerts() {
@@ -281,8 +281,13 @@ public class OrderService {
                         .divide(new BigDecimal(alerts.getPrice()), mc))
                         .multiply(new BigDecimal("100"), mc));
                 alerts.setRate(rate.doubleValue());
-                telegramService.sendAll(String.format("\uD83D\uDD14Продажа %s, пара: %s, цена: %s, доход: %s, сигнал от: %s",
-                        formater.format(alerts.getDate()), alerts.getSymbol(), alerts.getPrice(), alerts.getRate(), alerts.getBotName()));
+                telegramService.sendAll(String.format("\uD83D\uDD14Продажа %s, пара: %s, цена: %s, %sдоход: %.3f%%, сигнал от: %s",
+                        formater.format(alerts.getDate()),
+                        alerts.getSymbol(),
+                        alerts.getPrice(),
+                        (alerts.getRate() > 0) ? "\uD83D\uDCC8" : "\uD83D\uDCC9",
+                        alerts.getRate(),
+                        alerts.getBotName()));
             }
         }
         if ("buy".equalsIgnoreCase(alert) && isBuySymbol.get(symbol)) {
@@ -292,6 +297,6 @@ public class OrderService {
                     formater.format(alerts.getDate()), alerts.getSymbol(), alerts.getPrice(), alerts.getBotName()));
         }
         alertsRepo.save(alerts);
-        log.info("Symbol: " + symbol + "alert: " + alert + isBuySymbol.get(symbol));
+        log.info("Symbol: " + symbol + " alert: " + alert + isBuySymbol.get(symbol));
     }
 }
