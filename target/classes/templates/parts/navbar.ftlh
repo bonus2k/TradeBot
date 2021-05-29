@@ -57,7 +57,7 @@
                     <a class="nav-link" href="/telegram/${user.id}" target="_blank"><i class="fab fa-telegram fa-2x" style="color: #0088cc"></i></a>
                 <div class="dropdown open right-container">
                     <a
-                            class="btn btn-primary dropdown-toggle"
+                            class="btn btn-dark-lg btn-floating"
                             href="#"
                             id="navbarDropdownMenu"
                             role="navigation"
@@ -76,7 +76,7 @@
                                 <i class="far fa-wallet"></i> Счет</a>
                         </li>
                         <li>
-                            <@l.logout/>
+                            <a class="dropdown-item" href="#" onclick="postToUrl('/logout', {'_csrf':'${_csrf.token}'}, 'POST')"><i class="far fa-portal-exit"></i> Выход</a>
                         </li>
                     </ul>
                 </div>

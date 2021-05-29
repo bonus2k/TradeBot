@@ -17,6 +17,9 @@
     <!-- Google Fonts Roboto -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap">
 
+
+
+
     <!-- Material Design Bootstrap -->
     <link rel="stylesheet" href="/static/css/mdb.min.css">
     <!-- Your custom styles (optional) -->
@@ -38,11 +41,29 @@
 <script type="text/javascript" src="/static/js/bootstrap.min.js"></script>
 <!-- Bootstrap core CSS -->
 <link rel="stylesheet" href="/static/css/bootstrap.min.css">
+
 <!-- MDB core JavaScript -->
 <script type="text/javascript" src="/static/js/mdb.min.js"></script>
 <!-- Your custom scripts (optional) -->
 <script type="text/javascript">
+    function postToUrl(path, params, method) {
+        method = method || "post";
 
+        var form = document.createElement("form");
+        form.setAttribute("method", method);
+        form.setAttribute("action", path);
+        for(var key in params) {
+            var hiddenField = document.createElement("input");
+            hiddenField.setAttribute("type", "hidden");
+            hiddenField.setAttribute("name", key);
+            hiddenField.setAttribute("value", params[key]);
+
+            form.appendChild(hiddenField);
+        }
+
+        document.body.appendChild(form);
+        form.submit();
+    }
 </script>
 </body>
 </html>

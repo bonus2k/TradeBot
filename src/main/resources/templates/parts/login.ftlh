@@ -66,7 +66,6 @@
             </div>
         </#if>
         <input type="hidden" name="_csrf" value="${_csrf.token}"/>
-
         <button class="btn btn-primary">${button}</button>
         <#if !isRegisterForm>
             <a href="/registration" class="btn btn-outline-primary btn-sm" role="button" aria-pressed="true">Регистрация</a>
@@ -76,9 +75,9 @@
 
 <#macro logout>
 
-    <form action="/logout" method="post">
-        <input type="hidden" name="_csrf" value="${_csrf.token}"/>
-        <button class="btn btn-primary btn-theme me-3"><i class="far fa-portal-exit"></i> Выход</button>
-    </form>
+<#--    <form action="/logout" method="post">-->
+<#--        <input type="hidden" name="_csrf" value="${_csrf.token}"/>-->
+<#--        <button class="btn btn-primary btn-theme me-3"><i class="far fa-portal-exit"></i> Выход</button>-->
+<#--    </form>-->
 
 </#macro>

@@ -24,7 +24,7 @@ public interface UserRepo extends JpaRepository<User, Long> {
 
     Optional<User> findByEmail(String email);
 
-    Set<User> findBySymbolAndIsCanTrade(Symbol valueOf, boolean isCanTrade);
+    Set<User> findBySymbolAndIsCanTrade(Symbol symbol, boolean isCanTrade);
 
     @Transactional
     User save(User user);

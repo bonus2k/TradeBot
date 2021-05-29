@@ -1,9 +1,11 @@
 com\example\tradebot\config\MailConfig.class
 com\example\tradebot\domain\Symbol.class
-com\example\tradebot\domain\Order.class
+com\example\tradebot\controller\MyErrorController.class
 com\example\tradebot\service\OrderService.class
 com\example\tradebot\annotation\PasswordConstraintValidator.class
+com\example\tradebot\Nest.class
 com\example\tradebot\annotation\UniqueEmail.class
+com\example\tradebot\domain\usrOrder.class
 com\example\tradebot\config\TelegramBotConfig.class
 com\example\tradebot\domain\Alerts.class
 com\example\tradebot\domain\User.class

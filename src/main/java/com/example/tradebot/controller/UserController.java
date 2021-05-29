@@ -6,6 +6,9 @@ import com.example.tradebot.domain.User;
 import com.example.tradebot.service.OrderService;
 import com.example.tradebot.service.UserService;
 import com.example.tradebot.util.Util;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -61,9 +64,12 @@ public class UserController {
 
 
     @GetMapping("{user}/userOrder")
-    public String userOrder(@PathVariable User user, Model model) {
+    public String userOrder(@PathVariable User user, Model model,
+                            @PageableDefault(sort = {"time"}, direction = Sort.Direction.DESC, size = 15)
+                            Pageable pageable) {
         model.addAttribute("user", user);
-        model.addAttribute("orders", orderService.findByUser(user));
+        model.addAttribute("orders", orderService.findByUser(user, pageable));
+        model.addAttribute("url", "userOrder");
         return "userOrder";
     }
 

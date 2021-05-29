@@ -1,5 +1,6 @@
 <#import "parts/common.ftlh" as c>
 <#include "parts/security.ftlh">
+
 <@c.page>
 <#--    <h5>${userDB.username}</h5>-->
     <#if message??>
@@ -62,7 +63,12 @@
 
                                     <label class="form-check-label"
                                            for="autoSizingCheck2"> ${symbol}</label>
-                                    <#if isAdmin><a href="/handler?sym=${symbol}">SELL</a></#if>
+                                    <#if isAdmin>
+                                        <a href="/handler?sym=${symbol}">SELL</a>
+                                        <a href="/user/trade/${symbol}"><i class="far fa-sliders-h-square"></i></a>
+                                        ${symbol.limit?string("${symbol.percent}", "")}
+
+                                    </#if>
                                 </div>
                             </div>
                         </div>

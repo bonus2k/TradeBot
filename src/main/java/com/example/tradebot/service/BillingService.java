@@ -1,7 +1,7 @@
 package com.example.tradebot.service;
 
 import com.example.tradebot.domain.Billing;
-import com.example.tradebot.domain.Order;
+import com.example.tradebot.domain.usrOrder;
 import com.example.tradebot.domain.User;
 import com.example.tradebot.repos.BillingRepo;
 import com.example.tradebot.repos.OrderRepo;
@@ -12,6 +12,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -48,8 +49,8 @@ public class BillingService {
         SimpleDateFormat formater = new SimpleDateFormat("dd MMMM YY");
 
         Billing billing = billingRepo.findTopByUserOrderByDateDesc(user);
-        List<Order> orders = orderRepo.findOrderByDate(Util.getWeek(new Date()), new Date(), user);
-        Double profit = orders.stream().mapToDouble(Order::getProfit).sum();
+        List<usrOrder> orders = new ArrayList<>();//orderRepo.findOrderByDate(Util.getWeek(new Date()), new Date(), user);
+        Double profit = orders.stream().mapToDouble(usrOrder::getProfit).sum();
         if (profit > 0) {
             Double balance = billing.getBalance() - (profit * billing.getRate() / 100);
             billing.setBalance(balance);

@@ -1,4 +1,5 @@
 <#import "parts/common.ftlh" as c>
+<#import "parts/pager.ftlh" as p>
 
 <@c.page>
 
@@ -13,17 +14,17 @@
                 <th scope="col">Действие</th>
                 <th scope="col">Валюта</th>
                 <th scope="col">Цена</th>
-                <th scope="col">Доходность</th>
+                <th scope="col">PNL</th>
                 <th scope="col">Оповещение</th>
                 <th scope="col">Время</th>
             </tr>
             </thead>
 
             <tbody>
-            <#list alerts as alert>
+            <#list alerts.content as alert>
                 <tr>
                     <td><b>${alert.id}</b></td>
-                    <td><span>${alert.alert}</span></td>
+                    <td><span>${alert.alert?upper_case}</span></td>
                     <td><span>${alert.symbol}</span></td>
                     <td><span>${alert.price}</span></td>
                     <td>
@@ -37,14 +38,16 @@
                         </#if>
                     </td>
                     <td><span>${alert.botName}</span></td>
-                    <td><b>${alert.date?string["MMM d, HH:mm"]}</b></td>
+                    <td><b>${alert.date?string["d MMM, HH:mm"]}</b></td>
                 </tr>
             <#else>
-                No alerts
+                <div>
+                    <b>Нет записей</b>
+                </div>
             </#list>
             </tbody>
         </table>
     </div>
-
+    <@p.pager url alerts />
 
 </@c.page>
