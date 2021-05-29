@@ -32,7 +32,7 @@
 <div class="container mt-5">
     <#nested>
 </div>
-
+<a class="showButtonUp" id="buttonUp"></a>
 <!-- jQuery -->
 <script type="text/javascript" src="/static/js/jquery.min.js"></script>
 <!-- Bootstrap tooltips -->
@@ -46,6 +46,22 @@
 <script type="text/javascript" src="/static/js/mdb.min.js"></script>
 <!-- Your custom scripts (optional) -->
 <script type="text/javascript">
+
+    jQuery(document).ready(function() {
+        $(window).scroll(function () {
+            if ($(this).scrollTop() > 100) {
+                $('#buttonUp').fadeIn();
+            } else {
+                $('#buttonUp').fadeOut();
+            }
+        });
+        $('#buttonUp').on('click', function(e) {
+            e.preventDefault();
+            $('html, body').animate({scrollTop:0}, '500');
+        });
+    });
+
+
     function postToUrl(path, params, method) {
         method = method || "post";
 
@@ -65,6 +81,7 @@
         form.submit();
     }
 </script>
+
 </body>
 </html>
 </#macro>

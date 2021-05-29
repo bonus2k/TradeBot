@@ -10,13 +10,13 @@
         <table class="table table-sm">
             <thead>
             <tr>
-                <th scope="col">ID</th>
-                <th scope="col">Действие</th>
-                <th scope="col">Валюта</th>
-                <th scope="col">Цена</th>
-                <th scope="col">PNL</th>
-                <th scope="col">Оповещение</th>
-                <th scope="col">Время</th>
+                <th scope="col">ID <a href="/alert?sort=id"><i class="fal fa-sort"></i></a></th>
+                <th scope="col">Действие <a href="/alert?sort=alert"><i class="fal fa-sort"></i></a></th>
+                <th scope="col">Валюта <a href="/alert?sort=symbol"><i class="fal fa-sort"></i></a></th>
+                <th scope="col">Цена <a href="/alert?sort=price"><i class="fal fa-sort"></i></a></th>
+                <th scope="col">PNL <a href="/alert?sort=rate"><i class="fal fa-sort"></i></a></th>
+                <th scope="col">Оповещение <a href="/alert?sort=botName"> <i class="fal fa-sort"></i></a></th>
+                <th scope="col">Время <a href="/alert?sort=date"><i class="fal fa-sort"></i></a></th>
             </tr>
             </thead>
 

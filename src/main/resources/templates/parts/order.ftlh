@@ -1,20 +1,20 @@
 <#import "pager.ftlh" as p>
 <#import "pager.ftlh" as p>
-<#macro order>
+<#macro order url>
     <div>
         <table class="table table-sm">
             <thead>
             <tr>
-                <th scope="col">ID</th>
-                <th scope="col">Курс</th>
-                <th scope="col">Объем</th>
-                <th scope="col">Статус</th>
-                <th scope="col">Тип</th>
-                <th scope="col">Операция</th>
-                <th scope="col">Сумма</th>
-                <th scope="col">PNL</th>
-                <th scope="col">Валюта</th>
-                <th scope="col">Время</th>
+                <th scope="col">ID <a href="/${url}?sort=orderId"><i class="fal fa-sort"></i></a></th>
+                <th scope="col">Курс  <a href="/${url}?sort=price"><i class="fal fa-sort"></i></a></th>
+                <th scope="col">Объем  <a href="/${url}?sort=executedQty"><i class="fal fa-sort"></i></a></th>
+                <th scope="col">Статус  <a href="/${url}?sort=status"><i class="fal fa-sort"></i></a></th>
+                <th scope="col">Тип  <a href="/${url}?sort=type"><i class="fal fa-sort"></i></a></th>
+                <th scope="col">Операция  <a href="/${url}?sort=side"><i class="fal fa-sort"></i></a></th>
+                <th scope="col">Сумма  <a href="/${url}?sort=sum"><i class="fal fa-sort"></i></a></th>
+                <th scope="col">PNL  <a href="/${url}?sort=profit"><i class="fal fa-sort"></i></a></th>
+                <th scope="col">Валюта <a href="/${url}?sort=symbol"><i class="fal fa-sort"></i></a></th>
+                <th scope="col">Время  <a href="/${url}?sort=time"><i class="fal fa-sort"></i></a></th>
             </tr>
             </thead>
 

@@ -1,8 +1,8 @@
 package com.example.tradebot.service;
 
 import com.example.tradebot.domain.Billing;
-import com.example.tradebot.domain.usrOrder;
 import com.example.tradebot.domain.User;
+import com.example.tradebot.domain.usrOrder;
 import com.example.tradebot.repos.BillingRepo;
 import com.example.tradebot.repos.OrderRepo;
 import com.example.tradebot.repos.UserRepo;
@@ -12,7 +12,6 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -32,7 +31,7 @@ public class BillingService {
         this.billingRepo = billingRepo;
     }
 
-    @Scheduled(cron = "0 0 0 * * 6")
+    @Scheduled(cron = "0 0 0 * * 7")
     public void setBill() {
         List<User> users = userRepo.findAll();
         for (User user : users) {
@@ -45,18 +44,17 @@ public class BillingService {
     }
 
     private Billing getBilling(User user) {
-//        Comparator<Billing> comparator = Comparator.comparingLong(p -> p.getDate().getTime());
-        SimpleDateFormat formater = new SimpleDateFormat("dd MMMM YY");
+        SimpleDateFormat formatter = new SimpleDateFormat("dd MMMM YY");
 
         Billing billing = billingRepo.findTopByUserOrderByDateDesc(user);
-        List<usrOrder> orders = new ArrayList<>();//orderRepo.findOrderByDate(Util.getWeek(new Date()), new Date(), user);
+        List<usrOrder> orders = orderRepo.findOrderByDate(Util.getWeek(new Date()), new Date(), user);
         Double profit = orders.stream().mapToDouble(usrOrder::getProfit).sum();
         if (profit > 0) {
             Double balance = billing.getBalance() - (profit * billing.getRate() / 100);
             billing.setBalance(balance);
         }
         billing.setComment(String.format("Период расчета с %s по %s",
-                formater.format(Util.getWeek(new Date())), formater.format(new Date())));
+                formatter.format(Util.getWeek(new Date())), formatter.format(new Date())));
         billing.setProfitOnWeek(profit);
         return billingRepo.save(new Billing(billing));
     }
@@ -72,9 +70,7 @@ public class BillingService {
         loadBilling.setBalance(billing.getBalance());
         loadBilling.setRate(billing.getRate());
         loadBilling.setComment(billing.getComment());
-//        user.getBilling().add(loadBilling);
         billingRepo.save(new Billing(loadBilling));
-//        userRepo.save(user);
     }
 
     public Billing findTopByUserOrderByDateDesc(User user){

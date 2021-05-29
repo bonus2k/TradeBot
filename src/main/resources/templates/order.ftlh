@@ -8,7 +8,6 @@
 
     <div class="mb-1"><h5>Список исполненных ордеров</h5></div>
 
-    <@o.order>
+    <@o.order url/>
 
-    </@o.order>
 </@c.page>

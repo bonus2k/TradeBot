@@ -22,11 +22,6 @@ import java.util.stream.Collectors;
 @Service
 public class UserService implements UserDetailsService {
 
-//    @Autowired
-//    private ListableBeanFactory factory;
-//
-//    private static UserService instance;
-
     private final UserRepo userRepo;
     private final OrderService orderService;
     private final MailSender mailSender;
@@ -36,17 +31,6 @@ public class UserService implements UserDetailsService {
         this.orderService = orderService;
         this.mailSender = mailSender;
     }
-
-//    @PostConstruct
-//    public void init()
-//    {
-//        instance = this;
-//    }
-//
-//    public static ListableBeanFactory getFactory()
-//    {
-//        return instance.factory;
-//    }
 
     @Override
     public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {

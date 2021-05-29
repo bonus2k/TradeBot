@@ -16,10 +16,10 @@ import java.util.Date;
 @Table(name = "billing")
 public class Billing implements UserDetails {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "user_id")
+    @ManyToOne(optional=false)
+    @JoinColumn(name = "user_id", referencedColumnName="id")
     private User user;
     private Double balance;
     private Date date;

@@ -1,7 +1,6 @@
 D:\SeaFile\Seafile\Cloud\Java\testbot\src\main\java\com\example\tradebot\annotation\PasswordValueMatch.java
 D:\SeaFile\Seafile\Cloud\Java\testbot\src\main\java\com\example\tradebot\config\TelegramBotConfig.java
 D:\SeaFile\Seafile\Cloud\Java\testbot\src\main\java\com\example\tradebot\controller\TraderController.java
-D:\SeaFile\Seafile\Cloud\Java\testbot\src\main\java\com\example\tradebot\Nest.java
 D:\SeaFile\Seafile\Cloud\Java\testbot\src\main\java\com\example\tradebot\service\MailSender.java
 D:\SeaFile\Seafile\Cloud\Java\testbot\src\main\java\com\example\tradebot\annotation\PasswordConstraintValidator.java
 D:\SeaFile\Seafile\Cloud\Java\testbot\src\main\java\com\example\tradebot\util\Util.java
@@ -34,6 +33,5 @@ D:\SeaFile\Seafile\Cloud\Java\testbot\src\main\java\com\example\tradebot\domain\
 D:\SeaFile\Seafile\Cloud\Java\testbot\src\main\java\com\example\tradebot\controller\TelegramController.java
 D:\SeaFile\Seafile\Cloud\Java\testbot\src\main\java\com\example\tradebot\repos\BillingRepo.java
 D:\SeaFile\Seafile\Cloud\Java\testbot\src\main\java\com\example\tradebot\controller\BillingController.java
-D:\SeaFile\Seafile\Cloud\Java\testbot\src\main\java\com\example\tradebot\Test.java
 D:\SeaFile\Seafile\Cloud\Java\testbot\src\main\java\com\example\tradebot\service\UserService.java
 D:\SeaFile\Seafile\Cloud\Java\testbot\src\main\java\com\example\tradebot\config\MvcConfig.java

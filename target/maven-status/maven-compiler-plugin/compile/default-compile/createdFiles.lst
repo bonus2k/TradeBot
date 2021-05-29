@@ -3,7 +3,6 @@ com\example\tradebot\domain\Symbol.class
 com\example\tradebot\controller\MyErrorController.class
 com\example\tradebot\service\OrderService.class
 com\example\tradebot\annotation\PasswordConstraintValidator.class
-com\example\tradebot\Nest.class
 com\example\tradebot\annotation\UniqueEmail.class
 com\example\tradebot\domain\usrOrder.class
 com\example\tradebot\config\TelegramBotConfig.class
@@ -16,7 +15,6 @@ com\example\tradebot\repos\BillingRepo.class
 com\example\tradebot\controller\TelegramController.class
 com\example\tradebot\annotation\UniqueUsername.class
 com\example\tradebot\annotation\UniqueEmailConstraintValidator.class
-com\example\tradebot\Test.class
 com\example\tradebot\domain\dto\CaptchaResponseDto.class
 com\example\tradebot\annotation\PasswordValueMatch.class
 com\example\tradebot\service\BillingService.class

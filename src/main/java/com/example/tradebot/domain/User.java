@@ -83,8 +83,8 @@ public class User implements UserDetails {
     @Column(length = 2048)
     private String comment;
     private Double amount;
-    @OneToMany()
-    @JoinColumn(name = "bil_id")
+    @OneToMany(cascade=CascadeType.ALL,mappedBy="user")
+//    @JoinColumn(name = "bil_id")
     @EqualsAndHashCode.Exclude @ToString.Exclude
     private Set<Billing> billing;
     private Long telegram_chat_id;
@@ -92,6 +92,7 @@ public class User implements UserDetails {
     public User() {
         this.billing = new HashSet<>();
         billing.add(new Billing(this, 5.0, new Date(), 20));
+
     }
 
     public Double getAmount() {
