@@ -31,6 +31,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import static com.example.tradebot.util.Util.replaceZero;
+
 @Service
 @Log4j2
 public class TelegramService extends DefaultAbsSender implements WebhookBot {
@@ -104,7 +106,7 @@ public class TelegramService extends DefaultAbsSender implements WebhookBot {
                 execute(msg);
             } catch (TelegramApiException e) {
                 log.error(user.getUsername()+": "+e.getMessage());
-                if ("bot was blocked by the user".equals(e.getMessage())){
+                if (e.getMessage().contains("bot was blocked by the user")){
                     user.setTelegram_chat_id(null);
                     userRepo.save(user);
                 }
@@ -200,7 +202,5 @@ public class TelegramService extends DefaultAbsSender implements WebhookBot {
         }
     }
 
-    private String replaceZero(String str) {
-        return str.replaceAll("[\\.0]*$", "");
-    }
+
 }

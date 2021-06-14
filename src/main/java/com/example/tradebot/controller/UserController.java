@@ -6,9 +6,6 @@ import com.example.tradebot.domain.User;
 import com.example.tradebot.service.OrderService;
 import com.example.tradebot.service.UserService;
 import com.example.tradebot.util.Util;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -44,33 +41,18 @@ public class UserController {
     public String userEditForm(@PathVariable User user, Model model) {
         model.addAttribute("user", user);
         model.addAttribute("roles", Role.values());
-//        model.addAttribute("orders", orderService.findByUser(user));
         model.addAttribute("comment", user.getComment());
         return "userEdit";
     }
 
     @PreAuthorize("hasAuthority('ADMIN')")
     @PostMapping
-    public String userSave(//@RequestParam String username,
-                           @RequestParam Map<String, String> form,
+    public String userSave(@RequestParam Map<String, String> form,
                            @RequestParam("userId") User user,
                            @RequestParam(required = false, defaultValue = "off") String isRun
     ) {
         userService.userSave(form, user, isRun);
         return "redirect:/user";
-    }
-
-
-
-
-    @GetMapping("{user}/userOrder")
-    public String userOrder(@PathVariable User user, Model model,
-                            @PageableDefault(sort = {"time"}, direction = Sort.Direction.DESC, size = 15)
-                            Pageable pageable) {
-        model.addAttribute("user", user);
-        model.addAttribute("orders", orderService.findByUser(user, pageable));
-        model.addAttribute("url", "userOrder");
-        return "userOrder";
     }
 
     @GetMapping("setpassword")

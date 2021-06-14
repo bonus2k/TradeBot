@@ -25,7 +25,7 @@
                 </#if>
             </th>
             <th>${user.getAmount()?string["0.##"]}</th>
-            <th><a href="/user/${user.id}/userOrder"><i class="far fa-shopping-cart"></i> Просмотр</a></th>
+            <th><a href="${user.id}/userOrder"><i class="far fa-shopping-cart"></i> Просмотр</a></th>
             <th><a href="/${user.id}/billing"><i class="far fa-wallet"></i> Просмотр</a></th>
         </tr>
     </#list>

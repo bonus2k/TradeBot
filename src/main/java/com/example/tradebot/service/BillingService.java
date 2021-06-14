@@ -49,12 +49,16 @@ public class BillingService {
         Billing billing = billingRepo.findTopByUserOrderByDateDesc(user);
         List<usrOrder> orders = orderRepo.findOrderByDate(Util.getWeek(new Date()), new Date(), user);
         Double profit = orders.stream().mapToDouble(usrOrder::getProfit).sum();
+        Double commission = 0.0;
         if (profit > 0) {
-            Double balance = billing.getBalance() - (profit * billing.getRate() / 100);
+            commission = (profit * billing.getRate() / 100);
+            Double balance = billing.getBalance() - commission;
             billing.setBalance(balance);
         }
-        billing.setComment(String.format("Период расчета с %s по %s",
-                formatter.format(Util.getWeek(new Date())), formatter.format(new Date())));
+        billing.setComment(String.format("Период расчета с %s по %s \n" +
+                        "Комиссия: %s \n" +
+                        "Средств на бирже: %sUSDT",
+                formatter.format(Util.getWeek(new Date())), formatter.format(new Date()), commission, user.getAmount()));
         billing.setProfitOnWeek(profit);
         return billingRepo.save(new Billing(billing));
     }

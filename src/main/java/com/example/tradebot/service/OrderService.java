@@ -4,6 +4,7 @@ import com.binance.api.client.BinanceApiClientFactory;
 import com.binance.api.client.BinanceApiRestClient;
 import com.binance.api.client.domain.OrderSide;
 import com.binance.api.client.domain.OrderStatus;
+import com.binance.api.client.domain.OrderType;
 import com.binance.api.client.domain.TimeInForce;
 import com.binance.api.client.domain.account.*;
 import com.binance.api.client.domain.account.request.CancelOrderRequest;
@@ -17,6 +18,7 @@ import com.example.tradebot.repos.OrderRepo;
 import com.example.tradebot.repos.UserRepo;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -24,6 +26,8 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -186,9 +190,9 @@ public class OrderService {
         List<AssetBalance> balances = account.getBalances();
 
         Map<String, BigDecimal> balance = balances.stream()
-                .filter(o->!o.getLocked().equals("0.00000000") || !o.getFree().equals("0.00000000"))
+                .filter(o -> !o.getLocked().equals("0.00000000") || !o.getFree().equals("0.00000000"))
                 .collect(Collectors.toMap(AssetBalance::getAsset,
-                        o->new BigDecimal(o.getFree()).add(new BigDecimal(o.getLocked()))));
+                        o -> new BigDecimal(o.getFree()).add(new BigDecimal(o.getLocked()))));
 
         BigDecimal amountTotal = balance.entrySet()
                 .stream()
@@ -397,4 +401,71 @@ public class OrderService {
         alertsRepo.save(alerts);
         log.info("Symbol: " + symbol + " alert: " + alert + isBuySymbol.get(symbol));
     }
+
+    public Page<Alerts> findAlertsFilter(Map<String, String> form, PageRequest pageRequest) {
+        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy", Locale.ENGLISH);
+        String symbol = "%";
+        String alert = "%";
+        Date start = new Date(1212121212121L);
+        Date stop = new Date();
+        if (form.get("selectSymbol") != null && !form.get("selectSymbol").equals("")) {
+            symbol = form.get("selectSymbol");
+        }
+        if (form.get("selectSide") != null && !form.get("selectSide").equals("")) {
+            alert = form.get("selectSide").toLowerCase();
+        }
+        if (form.get("selectStart") != null && !form.get("selectStart").equals("")) {
+            try {
+                start = formatter.parse(form.get("selectStart"));
+            } catch (ParseException e) {
+                log.error(e.getMessage());
+            }
+        }
+        if (form.get("selectStop") != null && !form.get("selectStop").equals("")) {
+            try {
+                stop = formatter.parse(form.get("selectStop"));
+            } catch (ParseException e) {
+                log.error(e.getMessage());
+            }
+        }
+        return alertsRepo.findAlertsFilter(alert, symbol, start, stop, pageRequest);
+    }
+
+    public Page<usrOrder> findOrdersFilter(User user, Map<String, String> form, PageRequest pageRequest) {
+        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy", Locale.ENGLISH);
+        String symbol = "%";
+        OrderStatus[] orderStatus = OrderStatus.values();
+        OrderSide[] orderSide = OrderSide.values();
+        OrderType[] orderType = OrderType.values();
+        Date start = new Date(1212121212121L);
+        Date stop = new Date();
+        if (form.get("selectSymbol") != null && !form.get("selectSymbol").equals("")) {
+            symbol = form.get("selectSymbol");
+        }
+        if (form.get("selectSide") != null && !form.get("selectSide").equals("")) {
+           orderSide = new OrderSide[]{OrderSide.valueOf(form.get("selectSide"))};
+        }
+        if (form.get("selectStatus") != null && !form.get("selectStatus").equals("")) {
+            orderStatus = new OrderStatus[]{OrderStatus.valueOf(form.get("selectStatus"))};
+        }
+        if (form.get("selectType") != null && !form.get("selectType").equals("")) {
+            orderType = new OrderType[]{OrderType.valueOf(form.get("selectType"))};
+        }
+        if (form.get("selectStart") != null && !form.get("selectStart").equals("")) {
+            try {
+                start = formatter.parse(form.get("selectStart"));
+            } catch (ParseException e) {
+                log.error(e.getMessage());
+            }
+        }
+        if (form.get("selectStop") != null && !form.get("selectStop").equals("")) {
+            try {
+                stop = formatter.parse(form.get("selectStop"));
+            } catch (ParseException e) {
+                log.error(e.getMessage());
+            }
+        }
+        return orderRepo.findOrdersFilter(user, orderStatus, orderType, orderSide, symbol, start, stop, pageRequest);
+    }
+
 }

@@ -37,3 +37,122 @@ body{
     line-height: 35px;
     color: #fff;
 }
+
+/*body {*/
+/*    color: #000;*/
+/*    overflow-x: hidden;*/
+/*    height: 100%;*/
+/*    background-color: #66BB6A !important;*/
+/*    background-repeat: no-repeat*/
+/*}*/
+
+/*.container {*/
+/*    padding-top: 120px;*/
+/*    padding-bottom: 120px*/
+/*}*/
+
+/*input {*/
+/*    padding: 30px 15px !important;*/
+/*    border: 1px solid lightgrey !important;*/
+/*    border-radius: 10px;*/
+/*    box-sizing: border-box;*/
+/*    background-color: #fff !important;*/
+/*    color: #4CAF50 !important;*/
+/*    font-size: 18px !important;*/
+/*    letter-spacing: 1px;*/
+/*    position: relative;*/
+/*    font-weight: bold !important*/
+/*}*/
+
+/*.input1 {*/
+/*    text-align: left !important*/
+/*}*/
+
+/*.input2 {*/
+/*    text-align: right !important*/
+/*}*/
+
+/*input:focus {*/
+/*    -moz-box-shadow: none !important;*/
+/*    -webkit-box-shadow: none !important;*/
+/*    box-shadow: none !important;*/
+/*    border: 1px solid #512DA8;*/
+/*    outline-width: 0*/
+/*}*/
+
+/*::placeholder {*/
+/*    color: #BDBDBD;*/
+/*    opacity: 1*/
+/*}*/
+
+/*:-ms-input-placeholder {*/
+/*    color: #BDBDBD*/
+/*}*/
+
+/*::-ms-input-placeholder {*/
+/*    color: #BDBDBD*/
+/*}*/
+
+/*button:focus {*/
+/*    -moz-box-shadow: none !important;*/
+/*    -webkit-box-shadow: none !important;*/
+/*    box-shadow: none !important;*/
+/*    outline-width: 0*/
+/*}*/
+
+/*.datepicker {*/
+/*    background-color: #fff;*/
+/*    border-radius: 0 !important;*/
+/*    padding: 15px 20px !important;*/
+/*    align-content: center !important*/
+/*}*/
+
+/*.datepicker-dropdown {*/
+/*    top: 0;*/
+/*    !*left: calc(50% - 0px) !important*!*/
+/*}*/
+
+/*.datepicker-dropdown.datepicker-orient-left:before {*/
+/*    left: calc(50% - 6px) !important*/
+/*}*/
+
+/*.datepicker-dropdown.datepicker-orient-left:after {*/
+/*    left: calc(50% - 5px) !important*/
+/*}*/
+
+/*.datepicker table tr td.today,*/
+/*span.focused {*/
+/*    border-radius: 50% !important;*/
+/*    background-image: linear-gradient(#FFF3E0, #01579b)*/
+/*}*/
+
+/*.datepicker table tr td.today.range {*/
+/*    background-image: linear-gradient(#eeeeee, #eeeeee) !important;*/
+/*    border-radius: 0 !important*/
+/*}*/
+
+/*thead tr:nth-child(3) th {*/
+/*    font-weight: bold !important;*/
+/*    padding-top: 10px;*/
+/*    padding-bottom: 10px*/
+/*}*/
+
+.old,
+.day,
+.new {
+    width: 30px !important;
+    height: 30px !important;
+    /*border-radius: 5px !important;*/
+    /*border: 1px solid lightgrey !important*/
+}
+
+.btn-circle {
+    width: 25px;
+    height: 25px;
+    padding: 3.5px 0px;
+    border-radius: 50%;
+    text-align: center;
+    font-size: 12px;
+    line-height: 1.42857;
+}
+

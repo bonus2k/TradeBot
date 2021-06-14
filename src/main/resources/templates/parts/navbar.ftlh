@@ -21,11 +21,11 @@
                 </li>
                 <#if user??>
                     <li class="nav-item">
-                        <a class="nav-link" href="/alert"><i class="far fa-bell"></i> Сигналы</a>
+                        <a class="nav-link" href="/alertFilter"><i class="far fa-bell"></i> Сигналы</a>
                     </li>
                     <#if isUser>
                         <li class="nav-item">
-                            <a class="nav-link" href="/order"><i class="far fa-shopping-cart"></i> Ордера</a>
+                            <a class="nav-link" href="/orderFilter"><i class="far fa-shopping-cart"></i> Ордера</a>
                         </li>
                     </#if>
                     <li class="nav-item">

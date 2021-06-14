@@ -1,4 +1,4 @@
-<#macro pager url page>
+<#macro pager url page direc request>
     <#if page.getTotalPages() gt 5>
         <#assign
         totalPages = page.getTotalPages()
@@ -19,22 +19,16 @@
         <ul class="pagination justify-content-center">
             <#if pageNumber gt 1>
                 <li class="page-item">
-                    <a class="page-link" href="${url}?page=0&size=${page.getSize()}&sort=${page.getSort()?keep_before(":")}" tabindex="-1"
+                    <a class="page-link" href="${url}?page=0&size=${page.getSize()}&sort=${page.getSort()?keep_before(":")}&direc=${direc}${request!}" tabindex="-1"
                        aria-disabled="true"><i class="far fa-angle-double-left"></i></a>
                 </li>
 
                 <li class="page-item">
-                    <a class="page-link" href="${url}?page=${page.getNumber()-1}&size=${page.getSize()}&sort=${page.getSort()?keep_before(":")}" tabindex="-1"
+                    <a class="page-link" href="${url}?page=${page.getNumber()-1}&size=${page.getSize()}&sort=${page.getSort()?keep_before(":")}&direc=${direc}${request!}" tabindex="-1"
                        aria-disabled="true"><i class="far fa-angle-left"></i></a>
                 </li>
 
             <#else>
-<#--                <li class="page-item disabled">-->
-<#--                    <a class="page-link" href="#" tabindex="-1" aria-disabled="true"><i class="far fa-angle-double-left"></i></a>-->
-<#--                </li>-->
-<#--                <li class="page-item disabled">-->
-<#--                    <a class="page-link" href="#" tabindex="-1" aria-disabled="true"><i class="far fa-angle-left"></i></a>-->
-<#--                </li>-->
             </#if>
             <#list body as p>
                 <#if (p - 1)  == page.getNumber()>
@@ -42,28 +36,20 @@
                         <a class="page-link" href="${url}?page=${p}" tabindex="-1" aria-disabled="true">${p}</a>
                     </li>
                 <#else>
-                    <li class="page-item"><a class="page-link" href="${url}?page=${p-1}&size=${page.getSize()}&sort=${page.getSort()?keep_before(":")}">${p}</a>
+                    <li class="page-item"><a class="page-link" href="${url}?page=${p-1}&size=${page.getSize()}&sort=${page.getSort()?keep_before(":")}&direc=${direc}${request!}">${p}</a>
                     </li>
                 </#if>
             </#list>
             <#if pageNumber lt totalPages>
 
                 <li class="page-item">
-                    <a class="page-link active" href="${url}?page=${page.getNumber()+1}&size=${page.getSize()}&sort=${page.getSort()?keep_before(":")}"><i class="far fa-angle-right"></i></a>
+                    <a class="page-link active" href="${url}?page=${page.getNumber()+1}&size=${page.getSize()}&sort=${page.getSort()?keep_before(":")}&direc=${direc}${request!}"><i class="far fa-angle-right"></i></a>
                 </li>
 
                 <li class="page-item">
-                    <a class="page-link active" href="${url}?page=${totalPages-1}&size=${page.getSize()}&sort=${page.getSort()?keep_before(":")}"><i class="far fa-angle-double-right"></i></a>
+                    <a class="page-link active" href="${url}?page=${totalPages-1}&size=${page.getSize()}&sort=${page.getSort()?keep_before(":")}&direc=${direc}${request!}"><i class="far fa-angle-double-right"></i></a>
                 </li>
-
             <#else>
-<#--                <li class="page-item disabled">-->
-<#--                    <a class="page-link" href="#" tabindex="-1" aria-disabled="true"><i class="far fa-angle-right"></i></a>-->
-<#--                </li>-->
-
-<#--                <li class="page-item disabled">-->
-<#--                    <a class="page-link" href="#" tabindex="-1" aria-disabled="true"><i class="far fa-angle-double-right"></i></a>-->
-<#--                </li>-->
 
             </#if>
         </ul>
@@ -72,13 +58,13 @@
             <li class="page-item">
                 <span class="page-link disabled"><i class="fas fa-line-columns"></i></span>
             </li>
-            <#list [5, 10, 15, 30, 50] as c>
+            <#list [5, 10, 15, 30, 50, 300] as c>
                 <#if c  == page.getSize()>
                     <li class="page-item active">
                         <a class="page-link" href="#" tabindex="-1" aria-disabled="true">${c}</a>
                     </li>
                 <#else>
-                    <li class="page-item"><a class="page-link" href="${url}?page=${page.getNumber()}&size=${c}&sort=${page.getSort()?keep_before(":")}">${c}</a>
+                    <li class="page-item"><a class="page-link" href="${url}?page=${page.getNumber()}&size=${c}&sort=${page.getSort()?keep_before(":")}&direc=${direc}${request!}">${c}</a>
                     </li>
                 </#if>
             </#list>
