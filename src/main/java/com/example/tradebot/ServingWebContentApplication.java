@@ -4,9 +4,10 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.scheduling.annotation.EnableAsync;
 
-
+//@EnableJpaRepositories
 @EnableAsync
 @SpringBootApplication
+//@Configuration
 public class ServingWebContentApplication {
 
 

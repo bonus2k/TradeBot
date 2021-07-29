@@ -200,7 +200,8 @@ public class OrderService {
                 .map(o -> o.getValue().multiply(new BigDecimal(getPrice(o.getKey() + "USDT")), mc))
                 .reduce(new BigDecimal(0), (b1, b2) -> b1.add(b2, mc));
 
-        BigDecimal balUSDT = balance.get("USDT").round(mc);
+        Optional<BigDecimal> USDT = Optional.ofNullable(balance.get("USDT"));
+        BigDecimal balUSDT = USDT.orElse(new BigDecimal("0")).round(mc);
         amountTotal = amountTotal.add(balUSDT).round(mc);
 
         user.setAmount(amountTotal.doubleValue());
